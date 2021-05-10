@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<import resource="classpath:META-INF/datasource.xml"/>
+	
+<!-- 	<context:load-time-weaver /> -->
+	<context:annotation-config />
+	<context:component-scan base-package="net.zoostar.hw.service, 
+			net.zoostar.hw.web, net.zoostar.hw.web.config" />
+	
+	<mvc:annotation-driven />
+	
+	<mvc:view-controller path="/" view-name="index" />
+	<mvc:view-controller path="/login" view-name="login"/>
+
+	<mvc:resources location="/resources/theme-default/" mapping="/resources/**" cache-period="86400"/>
+	<mvc:resources location="classpath:/META-INF/resources/webjars/" mapping="/webjars/**" />
+	<mvc:resources location="classpath:/META-INF/resources/" mapping="swagger-ui.html" />
+
+	<mvc:default-servlet-handler />
+	
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver"
+		p:viewClass="org.springframework.web.servlet.view.JstlView"
+		p:prefix="/pages/"
+		p:suffix=".jsp"
+	/>
+	
+	<beans profile="dev">
+		<context:property-placeholder location="classpath:app.properties, classpath:dev/env.properties" />
+	</beans>
+	
+</beans>

@@ -1,0 +1,68 @@
+[
+  {
+  	"id": "1",
+    "sku": "sku1",
+    "name": "Product Name 1",
+    "desc": "Product Description 1"
+  },
+  {
+  	"id": "2",
+    "sku": "sku2",
+    "name": "Product Name 2",
+    "desc": "Product Description 2"
+  },
+  {
+  	"id": "3",
+    "sku": "sku3",
+    "name": "Product Name 3",
+    "desc": "Product Description 3"
+  },
+  {
+  	"id": "4",
+    "sku": "sku4",
+    "name": "Product Name 4",
+    "desc": "Product Description 4"
+  },
+  {
+  	"id": "5",
+    "sku": "sku5",
+    "name": "Product Name 5",
+    "desc": "Product Description 5"
+  },
+  {
+  	"id": "6",
+    "sku": "sku6",
+    "name": "Product Name 6",
+    "desc": "Product Description 6"
+  },
+  {
+  	"id": "7",
+    "sku": "sku7",
+    "name": "Product Name 7",
+    "desc": "Product Description 7"
+  },
+  {
+  	"id": "8",
+    "sku": "sku8",
+    "name": "Product Name 8",
+    "desc": "Product Description 8"
+  },
+  {
+  	"id": "9",
+    "sku": "sku9",
+    "name": "Product Name 9",
+    "desc": "Product Description 9"
+  },
+  {
+  	"id": "10",
+    "sku": "sku10",
+    "name": "Product Name 10",
+    "desc": "Product Description 10"
+  },
+  {
+  	"id": "11",
+    "sku": "sku11",
+    "name": "Product Name 11",
+    "desc": "Product Description 11"
+  }
+]
