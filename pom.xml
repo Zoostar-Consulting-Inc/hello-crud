@@ -6,4 +6,9 @@
 	<artifactId>hello-crud-parent</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
+	<properties>
+		<sonar.projectKey>zoostar_hello-crud</sonar.projectKey>
+		<sonar.organization>zoostar-github</sonar.organization>
+		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
+	</properties>
 </project>
