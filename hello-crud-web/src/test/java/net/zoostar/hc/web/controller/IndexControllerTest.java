@@ -61,7 +61,7 @@ class IndexControllerTest {
 		ModelAndView modelAndView = result.getModelAndView();
 		assertEquals("index", modelAndView.getViewName());
 		assertEquals("dev", modelAndView.getModel().get("env"));
-		assertEquals("Hello World", modelAndView.getModel().get("message"));
+		assertEquals("Hello CRUD", modelAndView.getModel().get("message"));
 	}
 
 	@Test
