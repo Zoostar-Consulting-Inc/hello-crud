@@ -16,10 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import net.zoostar.hc.model.Product;
+import net.zoostar.hc.service.ProductService;
+import net.zoostar.hc.validate.ValidatorException;
 import net.zoostar.hc.web.request.RequestProduct;
-import net.zoostar.hw.model.Product;
-import net.zoostar.hw.service.ProductService;
-import net.zoostar.hw.validate.ValidatorException;
 
 @Slf4j
 @Setter

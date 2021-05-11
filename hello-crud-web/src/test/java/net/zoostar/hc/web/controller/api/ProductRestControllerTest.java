@@ -42,11 +42,11 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.slf4j.Slf4j;
+import net.zoostar.hc.dao.ProductRepository;
 import net.zoostar.hc.model.Content;
+import net.zoostar.hc.model.Product;
+import net.zoostar.hc.service.impl.ProductServiceImpl;
 import net.zoostar.hc.web.filter.GatewayAuditFilterChain;
-import net.zoostar.hw.dao.hsql.ProductRepository;
-import net.zoostar.hw.model.Product;
-import net.zoostar.hw.service.impl.ProductServiceImpl;
 
 @Slf4j
 @WebAppConfiguration

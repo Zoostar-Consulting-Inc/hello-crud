@@ -26,6 +26,6 @@
 			<access-denied-handler error-page="/accessdenied"/>
 		</http>
 
-		<beans:bean id="authenticationProvider" class="net.zoostar.hw.web.config.DummyAuthenticationProviderImpl"/>
+		<beans:bean id="authenticationProvider" class="net.zoostar.hc.web.config.DummyAuthenticationProviderImpl"/>
 	</beans:beans>
 </beans:beans>
