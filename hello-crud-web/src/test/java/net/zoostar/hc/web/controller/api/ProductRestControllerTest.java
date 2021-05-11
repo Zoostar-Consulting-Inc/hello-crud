@@ -3,9 +3,10 @@ package net.zoostar.hc.web.controller.api;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.io.IOException;
@@ -25,7 +26,6 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
@@ -36,17 +36,16 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.slf4j.Slf4j;
 import net.zoostar.hc.dao.ProductRepository;
-import net.zoostar.hc.model.Content;
 import net.zoostar.hc.model.Product;
 import net.zoostar.hc.service.impl.ProductServiceImpl;
 import net.zoostar.hc.web.filter.GatewayAuditFilterChain;
+import net.zoostar.hc.web.request.RequestProduct;
 
 @Slf4j
 @WebAppConfiguration
@@ -55,6 +54,8 @@ import net.zoostar.hc.web.filter.GatewayAuditFilterChain;
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(locations = {"classpath:META-INF/applicationContext-web.xml"})
 class ProductRestControllerTest {
+	
+	protected ObjectMapper mapper = new ObjectMapper();
 	
 	protected List<Product> entities;
 
@@ -89,44 +90,94 @@ class ProductRestControllerTest {
 	}
 
 	@Test
-	void testRetrieveByPageOneOfMany() throws Exception {
+	void testCreateSuccess() throws Exception {
+		var url = new StringBuilder("/secured/api/product").toString();
+		var page = page(entities, PageRequest.of(0, 1));
+		var entity = page.getContent().get(0);
+		
 		//GIVEN
+		var request = new RequestProduct();
+		request.setSku(entity.getSku());
+		request.setName(entity.getName());
+		request.setDesc(entity.getDesc());
+
+		//WHEN
+		when(controller.getProductManager().getRepository().
+				save(request.toEntity())).thenReturn(entity);
+		
+		//THEN
+		String value = mapper.writeValueAsString(request);
+		log.info("Perform POST for URL: {}", url);
+		log.info("Sending create request: {}", value);
+		mockMvc.perform(post(url).
+	    		contentType(MediaType.APPLICATION_JSON).
+	    		content(value).
+	    		accept(MediaType.APPLICATION_JSON_VALUE)).
+	    		andExpect(status().isCreated()).
+	    		andExpect(content().contentType(MediaType.APPLICATION_JSON)).
+	    		andExpect(content().string(mapper.writeValueAsString(entity)));
+	}
+
+	@Test
+	void testCreateFailureMissingRequiredFieldException() throws Exception {
+		var url = new StringBuilder("/secured/api/product").toString();
+		var page = page(entities, PageRequest.of(0, 1));
+		var entity = page.getContent().get(0);
+		
+		//GIVEN
+		var request = new RequestProduct();
+		request.setName(entity.getName());
+		request.setDesc(entity.getDesc());
+
+		//THEN
+		String value = mapper.writeValueAsString(request);
+		log.info("Perform POST for URL: {}", url);
+		log.info("Sending create request: {}", value);
+		mockMvc.perform(post(url).
+	    		contentType(MediaType.APPLICATION_JSON).
+	    		content(value).
+	    		accept(MediaType.APPLICATION_JSON_VALUE)).
+	    		andExpect(status().isExpectationFailed()).
+	    		andExpect(content().contentType(MediaType.APPLICATION_JSON)).
+	    		andExpect(content().string(mapper.writeValueAsString(request.toEntity())));
+	}
+	
+	@Test
+	void testRetrieveByPageOneOfMany() throws Exception {
 		int number = 0;
 		int limit = 3;
 		var url = new StringBuilder("/secured/api/product/").
-				append(number).append("?limit=").append(limit);
+				append(number).append("?limit=").append(limit).toString();
 		
-		//MOCK
-		PageRequest page = PageRequest.of(number, limit);
-		when(controller.getProductManager().getRepository().findAll(page)).
-				thenReturn(page(entities, page));
+		var request = PageRequest.of(number, limit);
+		var page = page(entities, request);
+		when(controller.getProductManager().getRepository().findAll(request)).
+				thenReturn(page);
 
-		//WHEN
-		log.info("Perform GET for URL: {}", url.toString());
-	    var result = mockMvc.perform(get(url.toString()).accept(MediaType.APPLICATION_JSON)).
-	    		andExpect(status().isOk()).andReturn();
+		log.info("Perform GET for URL: {}", url);
+	    mockMvc.perform(get(url).
+			accept(MediaType.APPLICATION_JSON_VALUE)).
+			andExpect(status().isOk()).
+			andExpect(content().contentType(MediaType.APPLICATION_JSON)).
+			andExpect(content().string(mapper.writeValueAsString(page)));
 	    
-		//THEN
-		assertEquals(HttpStatus.OK.value(), result.getResponse().getStatus());
-		log.info("Received result: {}", result);
-
-//		var response = response(result.getResponse().getContentAsString());
-//		assertNotNull(response);
-//		log.info("Received response: {}", response);
-//		assertEquals(entities.size(), response.getTotalElements());
-//		assertEquals(limit, response.getNumberOfElements());
-//		assertEquals(number, response.getNumber());
-//		assertTrue(response.hasNext());
-//		assertFalse(response.hasPrevious());
-	}
-	
-	protected Page<Product> response(String response) throws JsonMappingException, JsonProcessingException {
-		var content = new ObjectMapper().readValue(response, new TypeReference<Content<Product>>() {});
-		return content.getContent();
+		assertEquals(Integer.valueOf(entities.size()).longValue(), page.getTotalElements());
+		assertEquals(limit, page.getNumberOfElements());
+		assertEquals(number, page.getNumber());
+		assertTrue(page.hasNext());
+		assertFalse(page.hasPrevious());
+		
+		List<Product> products = page.getContent();
+		for(int i=0; i<products.size(); i++) {
+			var product = products.get(i);
+			var entity = entities.get(i);
+			assertEquals(product, entity);
+			assertEquals(product.hashCode(), entity.hashCode());
+		}
 	}
 	
 	protected List<Product> entities(String path) throws JsonParseException, JsonMappingException, IOException {
-		return Collections.unmodifiableList(new ObjectMapper().readValue(
+		return Collections.unmodifiableList(mapper.readValue(
 				new ClassPathResource(path).getInputStream(),
 				new TypeReference<List<Product>>() { }));
 	}

@@ -8,28 +8,32 @@ import java.io.IOException;
 
 import org.junit.Assert;
 import org.junit.function.ThrowingRunnable;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
-import net.zoostar.hc.web.AbstractMockTestHarness;
-
-class DummyAuthenticationProviderImplTest extends AbstractMockTestHarness {
+@WebAppConfiguration
+@ActiveProfiles({"dev", "hsql-dev"})
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(locations = {
+		"classpath:META-INF/applicationContext-web.xml",
+		"classpath:META-INF/spring-security.xml"})
+class DummyAuthenticationProviderImplTest {
 
 	UsernamePasswordAuthenticationToken authentication;
-	DummyAuthenticationProviderImpl authenticationProvider;
 	
-	@BeforeEach
-	protected void beforeEach(TestInfo test) throws JsonParseException, JsonMappingException, IOException {
-		super.beforeEach(test);
-		authenticationProvider = new DummyAuthenticationProviderImpl();
-	}
+	@Autowired
+	DummyAuthenticationProviderImpl authenticationProvider;
 	
 	@Test
 	void testAuthenticateSuccess() throws JsonParseException, JsonMappingException, IOException {
@@ -49,7 +53,7 @@ class DummyAuthenticationProviderImplTest extends AbstractMockTestHarness {
 	}
 	
 	@Test
-	void testAuthenticateUserNotFound() throws JsonParseException, JsonMappingException, IOException {
+	void testAuthenticateUserNotFound() {
 		//GIVEN
 		String email = "user1@email.com";
 		authentication = new UsernamePasswordAuthenticationToken(email, "Hello!23");
@@ -57,13 +61,13 @@ class DummyAuthenticationProviderImplTest extends AbstractMockTestHarness {
 		
 		//WHEN
 		final ThrowingRunnable throwingRunnable = () -> authenticationProvider.authenticate(authentication);
-		
+			
 		//THEN
 		Assert.assertThrows(BadCredentialsException.class, throwingRunnable);
 	}
 	
 	@Test
-	void testAuthenticateIncorrectPassword() throws JsonParseException, JsonMappingException, IOException {
+	void testAuthenticateIncorrectPassword() {
 		//GIVEN
 		String email = "devops@zoostar.net";
 		authentication = new UsernamePasswordAuthenticationToken(email, "Hello123");

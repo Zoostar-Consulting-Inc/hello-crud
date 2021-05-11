@@ -28,7 +28,7 @@ public class Product implements Persistable<String> {
 	@GeneratedValue(generator="uuid")
 	@GenericGenerator(name="uuid", strategy="uuid2")
 	private String id;
-	
+
 	@Column(nullable = false, length = 20)
 	private String sku;
 	
@@ -38,10 +38,6 @@ public class Product implements Persistable<String> {
 	@Column(nullable = true, length = 50)
 	private String desc;
 
-	public Product(String sku) {
-		this.sku = sku;
-	}
-	
 	@Override
 	public String getId() {
 		return id;
@@ -71,5 +67,4 @@ public class Product implements Persistable<String> {
 		Product other = (Product) obj;
 		return Objects.equals(sku, other.sku);
 	}
-
 }
