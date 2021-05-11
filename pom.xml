@@ -21,6 +21,8 @@
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 	</properties>
 	<modules>
+		<module>hello-crud-web</module>
+		<module>hello-crud-module</module>
 		<module>hello-crud-entity</module>
 	</modules>
 	<dependencies>
