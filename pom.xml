@@ -16,6 +16,9 @@
 		<java.version>11</java.version>
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
+<!-- 		<sonar.projectKey>Zoostar-Consulting-Inc_hello-crud</sonar.projectKey> -->
+		<sonar.organization>zoostar-consulting-inc</sonar.organization>
+		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 	</properties>
 	<modules>
 		<module>hello-crud-web</module>
