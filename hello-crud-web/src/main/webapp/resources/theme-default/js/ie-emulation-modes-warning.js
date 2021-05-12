@@ -17,8 +17,7 @@
       return null
     }
     let ieVersionNum = parseInt(groups[1], 10)
-    let ieMajorVersion = Math.floor(ieVersionNum)
-    return ieMajorVersion
+    return Math.floor(ieVersionNum)
   }
 
   function actualNonEmulatedIEMajorVersion() {

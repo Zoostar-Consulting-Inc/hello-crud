@@ -23,7 +23,7 @@ public class DummyAuthenticationProviderImpl implements AuthenticationProvider, 
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 		UsernamePasswordAuthenticationToken authenticated = null;
 		String email = authentication.getName().trim();
-		String cred = authentication.getCredentials().toString();
+		var cred = authentication.getCredentials().toString();
 		log.info("Authenticating: {}...", email);
 		if(USERNAME.equalsIgnoreCase(email) && CREDENTIAL.equals(cred)) {
 			authenticated = new UsernamePasswordAuthenticationToken(
