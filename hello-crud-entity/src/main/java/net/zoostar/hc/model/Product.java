@@ -16,7 +16,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Getter
 @Setter
 @ToString
@@ -46,6 +48,10 @@ public class Product implements Persistable<String> {
 	@Override
 	public boolean isNew() {
 		return StringUtils.isBlank(id);
+	}
+	
+	public void setNew(boolean isNew) {
+		log.warn("setNew({}) will be ignored!", isNew);
 	}
 
 	@Override

@@ -12,6 +12,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -45,6 +48,8 @@ class IndexControllerTest {
 		System.out.println();
 		log.info("Executing test: [{}]...", test.getDisplayName());
 		
+		SecurityContextHolder.setContext(new SecurityContextImpl(
+				new UsernamePasswordAuthenticationToken("devops@zoostar.net", "Hello!23")));
 		GatewayAuditFilterChain filter = new GatewayAuditFilterChain();
 		Assert.assertNull(GatewayAuditFilterChain.GATEWAY_AUDIT_HOLDER.get());
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).

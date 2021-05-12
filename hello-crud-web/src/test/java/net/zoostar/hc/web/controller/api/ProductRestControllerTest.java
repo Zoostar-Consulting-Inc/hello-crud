@@ -2,6 +2,7 @@ package net.zoostar.hc.web.controller.api;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -94,6 +95,7 @@ class ProductRestControllerTest {
 		var url = new StringBuilder("/secured/api/product").toString();
 		var page = page(entities, PageRequest.of(0, 1));
 		var entity = page.getContent().get(0);
+		var id = entity.getId();
 		
 		//GIVEN
 		var request = new RequestProduct();
@@ -109,13 +111,25 @@ class ProductRestControllerTest {
 		String value = mapper.writeValueAsString(request);
 		log.info("Perform POST for URL: {}", url);
 		log.info("Sending create request: {}", value);
-		mockMvc.perform(post(url).
+		var result = mockMvc.perform(post(url).
 	    		contentType(MediaType.APPLICATION_JSON).
 	    		content(value).
 	    		accept(MediaType.APPLICATION_JSON_VALUE)).
 	    		andExpect(status().isCreated()).
 	    		andExpect(content().contentType(MediaType.APPLICATION_JSON)).
-	    		andExpect(content().string(mapper.writeValueAsString(entity)));
+	    		andExpect(content().string(mapper.writeValueAsString(entity))).
+	    		andReturn();
+		var response = result.getResponse();
+		assertNotNull(response);
+		log.info("Response: {}", response.getContentAsString());
+		entity = mapper.readValue(response.getContentAsString(), Product.class);
+		assertNotNull(entity);
+		assertEquals(id, entity.getId());
+		assertEquals(request.getName(), entity.getName());
+		assertEquals(request.getName(), entity.getName());
+		assertEquals(request.getDesc(), entity.getDesc());
+		assertFalse(entity.equals(null));
+		assertFalse(entity.equals(request));
 	}
 
 	@Test
