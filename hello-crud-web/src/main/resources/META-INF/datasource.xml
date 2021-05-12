@@ -21,7 +21,7 @@
 		<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
 			<property name="dataSource" ref="dataSource" />
 			<property name="packagesToScan" value="net.zoostar.hc.model" />
-			<property name="persistenceUnitName" value="hw" />
+			<property name="persistenceUnitName" value="hc" />
 			<property name="jpaVendorAdapter">
 				<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" />
 			</property>

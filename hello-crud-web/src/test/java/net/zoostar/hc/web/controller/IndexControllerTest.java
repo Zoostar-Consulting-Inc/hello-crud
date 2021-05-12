@@ -67,7 +67,7 @@ class IndexControllerTest {
 	@Test
 	void testExcludedUrlPattern() throws Exception {
 		//WHEN
-	    MvcResult result = mockMvc.perform(get("/hw/login")).andReturn();
+	    MvcResult result = mockMvc.perform(get("/hc/login")).andReturn();
 	    
 		//THEN
 		assertNotNull(result);

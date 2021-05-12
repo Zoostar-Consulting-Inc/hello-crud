@@ -19,12 +19,12 @@ import lombok.extern.slf4j.Slf4j;
 public class GatewayAuditFilterChain extends AbstractRequestLoggingFilter {
 	
 	private static final List<String> EXCLUDED_ENDPOINTS = Arrays.asList(
-			"/hw/signin.html", "/hw/login", "/hw/resources/css/bootstrap.min.css", 
-			"/hw/swagger-resources/configuration/ui", "/hw/webjars/springfox-swagger-ui/favicon-32x32.png",
-			"/hw/swagger-resources/configuration/security", "/hw/swagger-resources",
-			"/hw/v2/api-docs", "/hw/csrf",
-			"/hw/resources/css/ie10-viewport-bug-workaround.css", "/hw/resources/css/signin.css",
-			"/hw/resources/js/ie-emulation-modes-warning.js", "/hw/resources/js/ie10-viewport-bug-workaround.js"
+			"/hc/signin.html", "/hc/login", "/hc/resources/css/bootstrap.min.css", 
+			"/hc/swagger-resources/configuration/ui", "/hc/webjars/springfox-swagger-ui/favicon-32x32.png",
+			"/hc/swagger-resources/configuration/security", "/hc/swagger-resources",
+			"/hc/v2/api-docs", "/hc/csrf",
+			"/hc/resources/css/ie10-viewport-bug-workaround.css", "/hc/resources/css/signin.css",
+			"/hc/resources/js/ie-emulation-modes-warning.js", "/hc/resources/js/ie10-viewport-bug-workaround.js"
 	);
 
 	public static final ThreadLocal<GatewayAudit> GATEWAY_AUDIT_HOLDER = new ThreadLocal<>();

@@ -10,7 +10,6 @@
 
 	<import resource="classpath:META-INF/datasource.xml"/>
 	
-<!-- 	<context:load-time-weaver /> -->
 	<context:annotation-config />
 	<context:component-scan base-package="net.zoostar.hc.service, 
 			net.zoostar.hc.web, net.zoostar.hc.web.config" />
