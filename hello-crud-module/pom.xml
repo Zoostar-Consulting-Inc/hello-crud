@@ -8,6 +8,9 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>hello-crud-module</artifactId>
+	<properties>
+		<sonar.moduleKey>${artifactId}</sonar.moduleKey>
+	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>net.zoostar.hc</groupId>
