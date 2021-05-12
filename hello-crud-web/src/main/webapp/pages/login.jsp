@@ -9,7 +9,7 @@
 <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 <meta name="description" content="">
 <meta name="author" content="">
-<!-- <link rel="icon" href="../../favicon.ico"> -->
+<link rel="icon" href="../../favicon.ico">
 
 <title>Hello World</title>
 
@@ -37,7 +37,7 @@
 
 	<div class="container">
 		<c:if test="${param.error != null}">
-			<h1 align="center" style="color:red"><c:out value="${param.error}"></c:out></h1>
+			<h1 style="color:red;align-content:center"><c:out value="${param.error}"></c:out></h1>
 			<p/>
 		</c:if>
 		<form class="form-signin" method="post">

@@ -6,8 +6,6 @@ import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.AbstractRequestLoggingFilter;
@@ -55,8 +53,8 @@ public class GatewayAuditFilterChain extends AbstractRequestLoggingFilter {
 	}
 	
 	public String username() {
-		SecurityContext context = SecurityContextHolder.getContext();
-		Authentication authentication = context.getAuthentication();
+		var context = SecurityContextHolder.getContext();
+		var authentication = context.getAuthentication();
 		return authentication == null ? "" : authentication.getName();
 	}
 
