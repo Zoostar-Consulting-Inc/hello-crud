@@ -19,7 +19,9 @@
 		<sonar.organization>zoostar-consulting-inc</sonar.organization>
 		<sonar.projectKey>Zoostar-Consulting-Inc_hello-crud</sonar.projectKey>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
-<!-- 		<sonar.inclusions>**/src/main/java/**</sonar.inclusions> -->
+	    <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+	    <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
+	    <sonar.language>java</sonar.language>
 	</properties>
 	<modules>
 		<module>hello-crud-web</module>
@@ -65,6 +67,22 @@
 			        <generateBackupPoms>false</generateBackupPoms>
 			    </configuration>
 			</plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.6</version>
+                <configuration>
+                    <append>true</append>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 		</plugins>
 	</build>
 	<distributionManagement>
