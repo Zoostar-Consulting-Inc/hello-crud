@@ -2,6 +2,7 @@ package net.zoostar.hc.web.controller.api;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
@@ -119,6 +120,8 @@ class ProductRestControllerTest {
 	    		andExpect(content().contentType(MediaType.APPLICATION_JSON)).
 	    		andExpect(content().string(mapper.writeValueAsString(entity))).
 	    		andReturn();
+		assertNotNull(result);
+		
 		var response = result.getResponse();
 		assertNotNull(response);
 		log.info("Response: {}", response.getContentAsString());
@@ -128,8 +131,8 @@ class ProductRestControllerTest {
 		assertEquals(request.getName(), entity.getName());
 		assertEquals(request.getName(), entity.getName());
 		assertEquals(request.getDesc(), entity.getDesc());
-		assertFalse(entity.equals(null));
-		assertFalse(entity.equals(request));
+		assertNotEquals(entity, null);
+		assertNotEquals(entity, request);
 	}
 
 	@Test
@@ -169,11 +172,17 @@ class ProductRestControllerTest {
 				thenReturn(page);
 
 		log.info("Perform GET for URL: {}", url);
-	    mockMvc.perform(get(url).
+	    var result = mockMvc.perform(get(url).
 			accept(MediaType.APPLICATION_JSON_VALUE)).
 			andExpect(status().isOk()).
 			andExpect(content().contentType(MediaType.APPLICATION_JSON)).
-			andExpect(content().string(mapper.writeValueAsString(page)));
+			andExpect(content().string(mapper.writeValueAsString(page))).
+			andReturn();
+	    assertNotNull(result);
+
+	    var response = result.getResponse();
+		assertNotNull(response);
+		log.info("Response: {}", response.getContentAsString());
 	    
 		assertEquals(Integer.valueOf(entities.size()).longValue(), page.getTotalElements());
 		assertEquals(limit, page.getNumberOfElements());
@@ -185,6 +194,86 @@ class ProductRestControllerTest {
 		for(int i=0; i<products.size(); i++) {
 			var product = products.get(i);
 			var entity = entities.get(i);
+			assertEquals(product, entity);
+			assertEquals(product.hashCode(), entity.hashCode());
+		}
+	}
+	
+	@Test
+	void testRetrieveByPageNextOfMany() throws Exception {
+		int number = 1;
+		int limit = 3;
+		var url = new StringBuilder("/secured/api/product/").
+				append(number).append("?limit=").append(limit).toString();
+		
+		var request = PageRequest.of(number, limit);
+		var page = page(entities, request);
+		when(controller.getProductManager().getRepository().findAll(request)).
+				thenReturn(page);
+
+		log.info("Perform GET for URL: {}", url);
+	    var result = mockMvc.perform(get(url).
+			accept(MediaType.APPLICATION_JSON_VALUE)).
+			andExpect(status().isOk()).
+			andExpect(content().contentType(MediaType.APPLICATION_JSON)).
+			andExpect(content().string(mapper.writeValueAsString(page))).
+			andReturn();
+	    assertNotNull(result);
+
+	    var response = result.getResponse();
+		assertNotNull(response);
+		log.info("Response: {}", response.getContentAsString());
+	    
+		assertEquals(Integer.valueOf(entities.size()).longValue(), page.getTotalElements());
+		assertEquals(limit, page.getNumberOfElements());
+		assertEquals(number, page.getNumber());
+		assertTrue(page.hasNext());
+		assertTrue(page.hasPrevious());
+		
+		List<Product> products = page.getContent();
+		for(int i=0; i<products.size(); i++) {
+			var product = products.get(i);
+			var entity = entities.get((number * limit) + i);
+			assertEquals(product, entity);
+			assertEquals(product.hashCode(), entity.hashCode());
+		}
+	}
+	
+	@Test
+	void testRetrieveByPageLastOfMany() throws Exception {
+		int number = 3;
+		int limit = 3;
+		var url = new StringBuilder("/secured/api/product/").
+				append(number).append("?limit=").append(limit).toString();
+		
+		var request = PageRequest.of(number, limit);
+		var page = page(entities, request);
+		when(controller.getProductManager().getRepository().findAll(request)).
+				thenReturn(page);
+
+		log.info("Perform GET for URL: {}", url);
+	    var result = mockMvc.perform(get(url).
+			accept(MediaType.APPLICATION_JSON_VALUE)).
+			andExpect(status().isOk()).
+			andExpect(content().contentType(MediaType.APPLICATION_JSON)).
+			andExpect(content().string(mapper.writeValueAsString(page))).
+			andReturn();
+	    assertNotNull(result);
+
+	    var response = result.getResponse();
+		assertNotNull(response);
+		log.info("Response: {}", response.getContentAsString());
+	    
+		assertEquals(Integer.valueOf(entities.size()).longValue(), page.getTotalElements());
+		assertEquals(limit-1, page.getNumberOfElements());
+		assertEquals(number, page.getNumber());
+		assertFalse(page.hasNext());
+		assertTrue(page.hasPrevious());
+		
+		List<Product> products = page.getContent();
+		for(int i=0; i<products.size(); i++) {
+			var product = products.get(i);
+			var entity = entities.get((number * limit) + i);
 			assertEquals(product, entity);
 			assertEquals(product.hashCode(), entity.hashCode());
 		}
