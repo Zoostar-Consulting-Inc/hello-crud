@@ -52,7 +52,7 @@ public class GatewayAuditFilterChain extends AbstractRequestLoggingFilter {
 		}
 	}
 	
-	public String username() {
+	protected String username() {
 		var context = SecurityContextHolder.getContext();
 		var authentication = context.getAuthentication();
 		return authentication == null ? "" : authentication.getName();

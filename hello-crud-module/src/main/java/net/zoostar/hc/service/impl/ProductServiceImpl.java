@@ -23,7 +23,21 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	public Product create(Product product) throws ValidatorException {
-		var validator = new Validator<Product>() {
+		validateCreation(product);
+		return repository.save(product);
+	}
+
+	@Override
+	public Page<Product> retrieve(int number, int limit) {
+		return repository.findAll(PageRequest.of(number, limit));
+	}
+
+	protected void validateCreation(Product product) throws ValidatorException {
+		productSkuValidator().validate(product);
+	}
+
+	protected Validator<Product> productSkuValidator() {
+		return new Validator<Product>() {
 
 			@Override
 			public void validate(Product product) throws ValidatorException {
@@ -33,14 +47,6 @@ public class ProductServiceImpl implements ProductService {
 			}
 
 		};
-		
-		validator.validate(product);
-		return repository.save(product);
-	}
-
-	@Override
-	public Page<Product> retrieve(int number, int limit) {
-		return repository.findAll(PageRequest.of(number, limit));
 	}
 
 }
