@@ -7,6 +7,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import net.zoostar.hc.dao.ProductRepository;
 import net.zoostar.hc.model.Product;
 import net.zoostar.hc.service.ProductService;
@@ -14,6 +15,7 @@ import net.zoostar.hc.validate.MissingRequiredFieldException;
 import net.zoostar.hc.validate.Validator;
 import net.zoostar.hc.validate.ValidatorException;
 
+@Slf4j
 @Getter
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -44,6 +46,7 @@ public class ProductServiceImpl implements ProductService {
 				if(product == null || StringUtils.isBlank(product.getSku())) {
 					throw new MissingRequiredFieldException("Missing Required Field: sku");
 				}
+				log.info("Passed Product SKU Validation: {}", product);
 			}
 
 		};

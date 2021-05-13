@@ -80,7 +80,7 @@ class ProductRestControllerTest {
 		System.out.println();
 		log.info("Executing test: [{}]...", test.getDisplayName());
 		
-		GatewayAuditFilterChain filter = new GatewayAuditFilterChain();
+		var filter = new GatewayAuditFilterChain();
 		Assert.assertNull(GatewayAuditFilterChain.GATEWAY_AUDIT_HOLDER.get());
 		mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).
 				addFilters(filter).build();
