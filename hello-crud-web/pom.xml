@@ -14,7 +14,8 @@
 		<build.number>${user.name}</build.number>
 		<maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
 		<sonar.moduleKey>${project.artifactId}</sonar.moduleKey>
-		<sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/${project.artifactId}/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+		<sonar.exclusions>**/theme-default/**</sonar.exclusions>
+		<sonar.coverage.jacoco.xmlReportPaths>${basedir}/../${aggregate.report.dir}</sonar.coverage.jacoco.xmlReportPaths>
 	</properties>
 	<build>
 		<finalName>hc</finalName>
@@ -35,7 +36,6 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.8.6</version>
                 <configuration>
                     <append>true</append>
                 </configuration>
