@@ -10,7 +10,6 @@
 	<artifactId>hello-crud-entity</artifactId>
 	<properties>
 		<sonar.moduleKey>${project.artifactId}</sonar.moduleKey>
-		<sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../hello-crud-web/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
 	</properties>
 	<dependencies>
 		<dependency>

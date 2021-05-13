@@ -81,7 +81,13 @@
                             <goal>prepare-agent</goal>
                         </goals>
                     </execution>
-                </executions>
+					<execution>
+						<id>report</id>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+      	      </executions>
             </plugin>
 		</plugins>
 	</build>
