@@ -38,7 +38,7 @@ public class ProductRestController {
 		try {
 			response = new ResponseEntity<>(productManager.create(request.toEntity()), HttpStatus.CREATED);
 		} catch (ValidatorException e) {
-			response = new ResponseEntity<>(request.toEntity(), HttpStatus.EXPECTATION_FAILED);
+			response = new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
 		}
 		return response;
 	}

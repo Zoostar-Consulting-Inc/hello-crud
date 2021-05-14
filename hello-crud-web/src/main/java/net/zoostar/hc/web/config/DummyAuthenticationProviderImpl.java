@@ -36,8 +36,8 @@ public class DummyAuthenticationProviderImpl implements AuthenticationProvider, 
 	}
 
 	@Override
-	public boolean supports(Class<?> authentication) {
-		return authentication.equals(UsernamePasswordAuthenticationToken.class);
+	public boolean supports(Class<?> clazz) {
+		return UsernamePasswordAuthenticationToken.class.equals(clazz);
 	}
 
 	@Override

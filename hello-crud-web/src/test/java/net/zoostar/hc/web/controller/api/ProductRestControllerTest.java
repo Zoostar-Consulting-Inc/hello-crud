@@ -159,9 +159,7 @@ class ProductRestControllerTest {
 	    		contentType(MediaType.APPLICATION_JSON).
 	    		content(value).
 	    		accept(MediaType.APPLICATION_JSON_VALUE)).
-	    		andExpect(status().isExpectationFailed()).
-	    		andExpect(content().contentType(MediaType.APPLICATION_JSON)).
-	    		andExpect(content().string(mapper.writeValueAsString(request.toEntity())));
+	    		andExpect(status().isExpectationFailed());
 	}
 	
 	@Test
