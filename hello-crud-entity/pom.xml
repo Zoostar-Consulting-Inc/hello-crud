@@ -11,6 +11,7 @@
 	<properties>
 		<sonar.moduleKey>${project.artifactId}</sonar.moduleKey>
 		<sonar.coverage.jacoco.xmlReportPaths>${basedir}/../${aggregate.report.dir}</sonar.coverage.jacoco.xmlReportPaths>
+		<sonar.skip>true</sonar.skip>
 	</properties>
 	<dependencies>
 		<dependency>
