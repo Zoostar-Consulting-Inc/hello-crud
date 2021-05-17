@@ -18,4 +18,6 @@ public interface ProductService {
 
 	Product update(Product product) throws ValidatorException, MissingEntityException;
 
+	Product delete(String sku) throws MissingEntityException;
+
 }

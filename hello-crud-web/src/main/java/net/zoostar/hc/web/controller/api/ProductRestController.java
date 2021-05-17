@@ -1,10 +1,13 @@
 package net.zoostar.hc.web.controller.api;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -60,6 +63,19 @@ public class ProductRestController {
 		try {
 			response = new ResponseEntity<>(productManager.update(request.toEntity()), HttpStatus.OK);
 		} catch (ValidatorException | MissingEntityException e) {
+			log.warn(e.getMessage());
+			response = new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+		}
+		return response;
+	}
+	
+	@DeleteMapping(consumes=MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Product> delete(@RequestBody Map<String, String> request) {
+		log.info("Deleting existing record with sku: {}...", request);
+		ResponseEntity<Product> response = null;
+		try {
+			response = new ResponseEntity<>(productManager.delete(request.get("sku")), HttpStatus.OK);
+		} catch (IllegalArgumentException | MissingEntityException e) {
 			log.warn(e.getMessage());
 			response = new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
 		}

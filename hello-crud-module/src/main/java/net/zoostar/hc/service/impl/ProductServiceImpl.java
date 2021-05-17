@@ -65,7 +65,7 @@ public class ProductServiceImpl implements ProductService {
 
 		var optional = getRepository().findBySku(product.getSku());
 		if(optional.isEmpty()) {
-			throw new MissingEntityException();
+			throw new MissingEntityException("No entity found to update by SKU: " + product.getSku());
 		} else {
 			product.setId(optional.get().getId());
 		}
@@ -75,6 +75,22 @@ public class ProductServiceImpl implements ProductService {
 
 	private void preUpdateValidation(Product product) throws ValidatorException {
 		productSkuValidator.validate(product);
+	}
+
+	@Override
+	public Product delete(String sku) throws MissingEntityException {
+		log.info("Deleting by SKU: {}", sku);
+		
+		var optional = getRepository().findBySku(sku);
+		if(optional.isEmpty()) {
+			throw new MissingEntityException("No entity found to delete for sku: " + sku);
+		}
+		
+		var entity = optional.get();
+		log.info("Found entity to delete: {}", entity);
+		
+		getRepository().delete(entity);
+		return entity;
 	}
 
 }
