@@ -50,7 +50,7 @@ class IndexControllerTest {
 		
 		SecurityContextHolder.setContext(new SecurityContextImpl(
 				new UsernamePasswordAuthenticationToken("devops@zoostar.net", "Hello!23")));
-		GatewayAuditFilterChain filter = new GatewayAuditFilterChain();
+		var filter = new GatewayAuditFilterChain();
 		Assert.assertNull(GatewayAuditFilterChain.GATEWAY_AUDIT_HOLDER.get());
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).
 				addFilters(filter).build();
