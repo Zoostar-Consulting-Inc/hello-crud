@@ -8,12 +8,14 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
@@ -57,7 +59,7 @@ import net.zoostar.hc.web.request.RequestProduct;
 @ContextConfiguration(locations = {"classpath:META-INF/applicationContext-web.xml"})
 class ProductRestControllerTest {
 	
-	protected ObjectMapper mapper = new ObjectMapper();
+	protected final ObjectMapper mapper = new ObjectMapper();
 	
 	protected List<Product> entities;
 
@@ -128,7 +130,7 @@ class ProductRestControllerTest {
 		entity = mapper.readValue(response.getContentAsString(), Product.class);
 		assertNotNull(entity);
 		assertEquals(id, entity.getId());
-		assertEquals(request.getName(), entity.getName());
+		assertEquals(request.getSku(), entity.getSku());
 		assertEquals(request.getName(), entity.getName());
 		assertEquals(request.getDesc(), entity.getDesc());
 		assertNotEquals(entity, null);
@@ -138,6 +140,33 @@ class ProductRestControllerTest {
 		product.setName("name");
 		product.setSku("sku");
 		assertNotEquals(entity, product);
+	}
+
+	@Test
+	void testCreateFailureDuplicateEntity() throws Exception {
+		var url = new StringBuilder("/secured/api/product").toString();
+		var page = page(entities, PageRequest.of(0, 1));
+		var entity = page.getContent().get(0);
+		
+		//GIVEN
+		var request = new RequestProduct();
+		request.setSku(entity.getSku());
+		request.setName(entity.getName());
+		request.setDesc(entity.getDesc());
+
+		//WHEN
+		when(controller.getProductManager().getRepository().
+				findBySku(entity.getSku())).thenReturn(Optional.of(entity));
+		
+		//THEN
+		String value = mapper.writeValueAsString(request);
+		log.info("Perform POST for URL: {}", url);
+		log.info("Sending create request for duplicate entity: {}", value);
+		mockMvc.perform(post(url).
+	    		contentType(MediaType.APPLICATION_JSON).
+	    		content(value).
+	    		accept(MediaType.APPLICATION_JSON_VALUE)).
+	    		andExpect(status().isExpectationFailed());
 	}
 
 	@Test
@@ -282,6 +311,95 @@ class ProductRestControllerTest {
 		}
 	}
 	
+	@Test
+	void testUpdateSuccess() throws Exception {
+		var url = new StringBuilder("/secured/api/product").toString();
+		var page = page(entities, PageRequest.of(0, 1));
+		var existingEntity = page.getContent().get(0);
+		var entity = new Product(existingEntity);
+		entity.setId(existingEntity.getId());
+		
+		//GIVEN
+		var request = new RequestProduct();
+		request.setSku(existingEntity.getSku());
+		request.setName(existingEntity.getName() + " Update");
+		request.setDesc(existingEntity.getDesc() + " Update");
+
+		//WHEN
+		when(controller.getProductManager().getRepository().
+				findBySku(request.getSku())).thenReturn(Optional.of(existingEntity));
+		
+		Product updatedEntity = updatedEntity(request, existingEntity);
+		when(controller.getProductManager().getRepository().
+				save(request.toEntity())).thenReturn(updatedEntity);
+		
+		//THEN
+		String value = mapper.writeValueAsString(request);
+		log.info("Perform PUT for URL: {}", url);
+		log.info("Sending update request: {}", value);
+		var result = mockMvc.perform(put(url).
+	    		contentType(MediaType.APPLICATION_JSON).
+	    		content(value).
+	    		accept(MediaType.APPLICATION_JSON_VALUE)).
+	    		andExpect(status().isOk()).
+	    		andExpect(content().contentType(MediaType.APPLICATION_JSON)).
+	    		andExpect(content().string(mapper.writeValueAsString(updatedEntity))).
+	    		andReturn();
+		assertNotNull(result);
+		
+		var response = result.getResponse();
+		assertNotNull(response);
+		log.info("Response: {}", response.getContentAsString());
+		updatedEntity = mapper.readValue(response.getContentAsString(), Product.class);
+		assertNotNull(updatedEntity);
+		
+		assertEquals(existingEntity.getId(), updatedEntity.getId());
+		assertEquals(existingEntity.getSku(), updatedEntity.getSku());
+		assertEquals(request.getName(), updatedEntity.getName());
+		assertEquals(request.getDesc(), updatedEntity.getDesc());
+
+		assertNotEquals(existingEntity.getName(), updatedEntity.getName());
+		assertNotEquals(existingEntity.getDesc(), updatedEntity.getDesc());
+	}
+	
+	@Test
+	void testUpdateFailureMissingEntity() throws Exception {
+		var url = new StringBuilder("/secured/api/product").toString();
+		var page = page(entities, PageRequest.of(0, 1));
+		var existingEntity = page.getContent().get(0);
+		var entity = new Product(existingEntity);
+		entity.setId(existingEntity.getId());
+		
+		//GIVEN
+		var request = new RequestProduct();
+		request.setSku(existingEntity.getSku());
+		request.setName(existingEntity.getName() + " Update");
+		request.setDesc(existingEntity.getDesc() + " Update");
+
+		//WHEN
+		when(controller.getProductManager().getRepository().
+				findBySku(request.getSku())).thenReturn(Optional.ofNullable(null));
+		
+		//THEN
+		String value = mapper.writeValueAsString(request);
+		log.info("Perform PUT for URL: {}", url);
+		log.info("Sending update request: {}", value);
+		mockMvc.perform(put(url).
+	    		contentType(MediaType.APPLICATION_JSON).
+	    		content(value).
+	    		accept(MediaType.APPLICATION_JSON_VALUE)).
+	    		andExpect(status().isExpectationFailed());
+	}
+	
+	protected Product updatedEntity(RequestProduct request, Product existingEntity) {
+		var product = new Product();
+		product.setId(existingEntity.getId());
+		product.setSku(existingEntity.getSku());
+		product.setDesc(request.getDesc());
+		product.setName(request.getName());
+		return product;
+	}
+
 	protected List<Product> entities(String path) throws JsonParseException, JsonMappingException, IOException {
 		return Collections.unmodifiableList(mapper.readValue(
 				new ClassPathResource(path).getInputStream(),

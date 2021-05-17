@@ -40,6 +40,12 @@ public class Product implements Persistable<String> {
 	@Column(nullable = true, length = 50)
 	private String desc;
 
+	public Product(Product copy) {
+		this.sku = copy.getSku();
+		this.name = copy.getName();
+		this.desc = copy.getDesc();
+	}
+	
 	@Override
 	public String getId() {
 		return id;

@@ -22,10 +22,17 @@ public class ProductServiceImpl implements ProductService {
 
 	@Autowired
 	protected ProductRepository repository;
+	
+	protected final Validator<Product> productSkuValidator = productSkuValidator();
 
 	@Override
-	public Product create(Product product) throws ValidatorException {
-		validateCreation(product);
+	public Product create(Product product) throws ValidatorException, DuplicateEntityException {
+		preCreateValidation(product);
+		
+		if(getRepository().findBySku(product.getSku()).isPresent()) {
+			throw new DuplicateEntityException();
+		}
+		
 		return repository.save(product);
 	}
 
@@ -34,8 +41,8 @@ public class ProductServiceImpl implements ProductService {
 		return repository.findAll(PageRequest.of(number, limit));
 	}
 
-	protected void validateCreation(Product product) throws ValidatorException {
-		productSkuValidator().validate(product);
+	protected void preCreateValidation(Product product) throws ValidatorException {
+		productSkuValidator.validate(product);
 	}
 
 	protected Validator<Product> productSkuValidator() {
@@ -50,6 +57,24 @@ public class ProductServiceImpl implements ProductService {
 			}
 
 		};
+	}
+
+	@Override
+	public Product update(Product product) throws ValidatorException, MissingEntityException {
+		preUpdateValidation(product);
+
+		var optional = getRepository().findBySku(product.getSku());
+		if(optional.isEmpty()) {
+			throw new MissingEntityException();
+		} else {
+			product.setId(optional.get().getId());
+		}
+		
+		return repository.save(product);
+	}
+
+	private void preUpdateValidation(Product product) throws ValidatorException {
+		productSkuValidator.validate(product);
 	}
 
 }
