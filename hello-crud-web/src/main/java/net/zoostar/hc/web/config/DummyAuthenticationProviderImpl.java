@@ -22,10 +22,10 @@ public class DummyAuthenticationProviderImpl implements AuthenticationProvider, 
 	@Override
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 		UsernamePasswordAuthenticationToken authenticated = null;
-		String email = authentication.getName().trim();
-		var cred = authentication.getCredentials().toString();
+		var email = authentication.getName().trim();
 		log.info("Authenticating: {}...", email);
-		if(USERNAME.equalsIgnoreCase(email) && CREDENTIAL.equals(cred)) {
+		if(USERNAME.equalsIgnoreCase(email) &&
+				CREDENTIAL.equals(authentication.getCredentials().toString())) {
 			authenticated = new UsernamePasswordAuthenticationToken(
 					USERNAME, CREDENTIAL, Collections.emptyList());
 			log.info("{} authenticated successfully.", email);
