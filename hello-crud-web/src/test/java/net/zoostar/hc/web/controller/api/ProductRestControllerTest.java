@@ -5,7 +5,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -14,7 +16,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.junit.Assert;
@@ -75,7 +79,7 @@ class ProductRestControllerTest {
 	protected ProductServiceImpl productManager;
 	
 	@Autowired
-	protected ProductRestController controller;
+	protected ProductRestController service;
 	
 	@BeforeEach
 	public void beforeEach(TestInfo test) throws JsonParseException, JsonMappingException, IOException {
@@ -90,12 +94,12 @@ class ProductRestControllerTest {
 		entities = entities("data/products.json");
 		log.info("Total number of entities loaded: {}", entities.size());
 		
-		controller.setProductManager(productManager);
+		service.setProductManager(productManager);
 	}
 
 	@Test
 	void testCreateSuccess() throws Exception {
-		var url = new StringBuilder("/secured/api/product").toString();
+		var url = "/secured/api/product";
 		var page = page(entities, PageRequest.of(0, 1));
 		var entity = page.getContent().get(0);
 		var id = entity.getId();
@@ -107,7 +111,7 @@ class ProductRestControllerTest {
 		request.setDesc(entity.getDesc());
 
 		//WHEN
-		when(controller.getProductManager().getRepository().
+		when(service.getProductManager().getRepository().
 				save(request.toEntity())).thenReturn(entity);
 		
 		//THEN
@@ -144,7 +148,7 @@ class ProductRestControllerTest {
 
 	@Test
 	void testCreateFailureDuplicateEntity() throws Exception {
-		var url = new StringBuilder("/secured/api/product").toString();
+		var url = "/secured/api/product";
 		var page = page(entities, PageRequest.of(0, 1));
 		var entity = page.getContent().get(0);
 		
@@ -155,7 +159,7 @@ class ProductRestControllerTest {
 		request.setDesc(entity.getDesc());
 
 		//WHEN
-		when(controller.getProductManager().getRepository().
+		when(service.getProductManager().getRepository().
 				findBySku(entity.getSku())).thenReturn(Optional.of(entity));
 		
 		//THEN
@@ -171,7 +175,7 @@ class ProductRestControllerTest {
 
 	@Test
 	void testCreateFailureMissingRequiredFieldException() throws Exception {
-		var url = new StringBuilder("/secured/api/product").toString();
+		var url = "/secured/api/product";
 		var page = page(entities, PageRequest.of(0, 1));
 		var entity = page.getContent().get(0);
 		
@@ -200,7 +204,7 @@ class ProductRestControllerTest {
 		
 		var request = PageRequest.of(number, limit);
 		var page = page(entities, request);
-		when(controller.getProductManager().getRepository().findAll(request)).
+		when(service.getProductManager().getRepository().findAll(request)).
 				thenReturn(page);
 
 		log.info("Perform GET for URL: {}", url);
@@ -240,7 +244,7 @@ class ProductRestControllerTest {
 		
 		var request = PageRequest.of(number, limit);
 		var page = page(entities, request);
-		when(controller.getProductManager().getRepository().findAll(request)).
+		when(service.getProductManager().getRepository().findAll(request)).
 				thenReturn(page);
 
 		log.info("Perform GET for URL: {}", url);
@@ -280,7 +284,7 @@ class ProductRestControllerTest {
 		
 		var request = PageRequest.of(number, limit);
 		var page = page(entities, request);
-		when(controller.getProductManager().getRepository().findAll(request)).
+		when(service.getProductManager().getRepository().findAll(request)).
 				thenReturn(page);
 
 		log.info("Perform GET for URL: {}", url);
@@ -313,7 +317,7 @@ class ProductRestControllerTest {
 	
 	@Test
 	void testUpdateSuccess() throws Exception {
-		var url = new StringBuilder("/secured/api/product").toString();
+		var url = "/secured/api/product";
 		var page = page(entities, PageRequest.of(0, 1));
 		var existingEntity = page.getContent().get(0);
 		var entity = new Product(existingEntity);
@@ -326,11 +330,11 @@ class ProductRestControllerTest {
 		request.setDesc(existingEntity.getDesc() + " Update");
 
 		//WHEN
-		when(controller.getProductManager().getRepository().
+		when(service.getProductManager().getRepository().
 				findBySku(request.getSku())).thenReturn(Optional.of(existingEntity));
 		
 		Product updatedEntity = updatedEntity(request, existingEntity);
-		when(controller.getProductManager().getRepository().
+		when(service.getProductManager().getRepository().
 				save(request.toEntity())).thenReturn(updatedEntity);
 		
 		//THEN
@@ -364,7 +368,7 @@ class ProductRestControllerTest {
 	
 	@Test
 	void testUpdateFailureMissingEntity() throws Exception {
-		var url = new StringBuilder("/secured/api/product").toString();
+		var url = "/secured/api/product";
 		var page = page(entities, PageRequest.of(0, 1));
 		var existingEntity = page.getContent().get(0);
 		var entity = new Product(existingEntity);
@@ -377,7 +381,7 @@ class ProductRestControllerTest {
 		request.setDesc(existingEntity.getDesc() + " Update");
 
 		//WHEN
-		when(controller.getProductManager().getRepository().
+		when(service.getProductManager().getRepository().
 				findBySku(request.getSku())).thenReturn(Optional.ofNullable(null));
 		
 		//THEN
@@ -385,6 +389,67 @@ class ProductRestControllerTest {
 		log.info("Perform PUT for URL: {}", url);
 		log.info("Sending update request: {}", value);
 		mockMvc.perform(put(url).
+	    		contentType(MediaType.APPLICATION_JSON).
+	    		content(value).
+	    		accept(MediaType.APPLICATION_JSON_VALUE)).
+	    		andExpect(status().isExpectationFailed());
+	}
+	
+	@Test
+	void testDeleteSuccess() throws Exception {
+		String url = "/secured/api/product";
+		var entity = page(entities, PageRequest.of(0, 1)).getContent().get(0);
+		String id = entity.getId();
+		
+		//GIVEN
+		String sku = entity.getSku();
+		
+		//WHEN
+		when(service.getProductManager().getRepository().findBySku(sku)).
+				thenReturn(Optional.of(entity));
+		
+		doNothing().when(service.getProductManager().getRepository()).delete(entity);
+		
+		//THEN
+		Map<String, String> request = new HashMap<>(1);
+		request.put("sku", sku);
+		String value = mapper.writeValueAsString(request);
+		log.info("Perform DELETE for URL: {}", url);
+		log.info("Sending delete request: {}", value);
+		var result = mockMvc.perform(delete(url).
+	    		contentType(MediaType.APPLICATION_JSON).
+	    		content(value).
+	    		accept(MediaType.APPLICATION_JSON_VALUE)).
+	    		andExpect(status().isOk()).
+	    		andExpect(content().contentType(MediaType.APPLICATION_JSON)).
+	    		andExpect(content().string(mapper.writeValueAsString(entity))).
+	    		andReturn();
+		assertNotNull(result);
+		
+		var response = result.getResponse();
+		assertNotNull(response);
+		log.info("Response: {}", response.getContentAsString());
+		entity = mapper.readValue(response.getContentAsString(), Product.class);
+		assertNotNull(entity);
+		assertEquals(id, entity.getId());
+		assertEquals(sku, entity.getSku());
+		log.info("Deleted entity: {}", entity);
+	}
+	
+	@Test
+	void testDeleteFailureMissingEntity() throws Exception {
+		String url = "/secured/api/product";
+		
+		//GIVEN
+		String sku = "sku";
+		
+		//THEN
+		Map<String, String> request = new HashMap<>(1);
+		request.put("sku", sku);
+		String value = mapper.writeValueAsString(request);
+		log.info("Perform DELETE for URL: {}", url);
+		log.info("Sending delete request: {}", value);
+		mockMvc.perform(delete(url).
 	    		contentType(MediaType.APPLICATION_JSON).
 	    		content(value).
 	    		accept(MediaType.APPLICATION_JSON_VALUE)).
