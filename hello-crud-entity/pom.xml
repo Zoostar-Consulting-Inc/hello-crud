@@ -9,8 +9,7 @@
 	</parent>
 	<artifactId>hello-crud-entity</artifactId>
 	<properties>
-		<sonar.moduleKey>${project.artifactId}</sonar.moduleKey>
-		<sonar.coverage.jacoco.xmlReportPaths>${basedir}/../${aggregate.report.dir}/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+		<sonar.skip>true</sonar.skip>
 	</properties>
 	<dependencies>
 		<dependency>
