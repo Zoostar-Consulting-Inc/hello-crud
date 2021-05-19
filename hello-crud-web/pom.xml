@@ -13,9 +13,7 @@
 	<properties>
 		<build.number>${user.name}</build.number>
 		<maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
-<!-- 		<sonar.moduleKey>${project.artifactId}</sonar.moduleKey> -->
 		<sonar.exclusions>**/theme-default/**</sonar.exclusions>
-<!-- 		<sonar.coverage.jacoco.xmlReportPaths>${basedir}/target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths> -->
 	</properties>
 	<build>
 		<finalName>hc</finalName>
@@ -43,9 +41,6 @@
 						<goals>
 							<goal>report-aggregate</goal>
 						</goals>
-<!-- 						<configuration> -->
-<!-- 							<outputDirectory>${basedir}/target/site/jacoco</outputDirectory> -->
-<!-- 						</configuration> -->
 					</execution>
 				</executions>
 			</plugin>
