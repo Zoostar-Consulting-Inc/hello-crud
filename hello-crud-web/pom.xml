@@ -13,8 +13,9 @@
 	<properties>
 		<build.number>${user.name}</build.number>
 		<maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
-		<sonar.moduleKey>${project.artifactId}</sonar.moduleKey>
+<!-- 		<sonar.moduleKey>${project.artifactId}</sonar.moduleKey> -->
 		<sonar.exclusions>**/theme-default/**</sonar.exclusions>
+<!-- 		<sonar.coverage.jacoco.xmlReportPaths>${basedir}/target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths> -->
 	</properties>
 	<build>
 		<finalName>hc</finalName>
@@ -35,48 +36,32 @@
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.8.7</version>
 				<executions>
 					<execution>
-						<goals>
-							<goal>prepare-agent</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>report</id>
+						<id>report-aggregate</id>
 						<phase>verify</phase>
 						<goals>
-							<goal>report</goal>
+							<goal>report-aggregate</goal>
 						</goals>
-					</execution>
-					<execution>
-						<id>default-check</id>
-						<goals>
-							<goal>check</goal>
-						</goals>
-						<configuration>
-							<rules>
-								<rule>
-									<element>CLASS</element>
-									<excludes>
-										<exclude>*Test</exclude>
-									</excludes>
-									<limits>
-										<limit>
-											<counter>LINE</counter>
-											<value>COVEREDRATIO</value>
-											<minimum>90%</minimum>
-										</limit>
-									</limits>
-								</rule>
-							</rules>
-						</configuration>
+<!-- 						<configuration> -->
+<!-- 							<outputDirectory>${basedir}/target/site/jacoco</outputDirectory> -->
+<!-- 						</configuration> -->
 					</execution>
 				</executions>
 			</plugin>
 		</plugins>
 	</build>
 	<dependencies>
+		<dependency>
+			<groupId>net.zoostar.hc</groupId>
+			<artifactId>hello-crud-entity</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>net.zoostar.hc</groupId>
+			<artifactId>hello-crud-module</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 		<dependency>
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-swagger2</artifactId>
@@ -86,11 +71,6 @@
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-swagger-ui</artifactId>
 			<version>2.9.2</version>
-		</dependency>
-		<dependency>
-			<groupId>net.zoostar.hc</groupId>
-			<artifactId>hello-crud-module</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -133,11 +113,6 @@
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-junit-jupiter</artifactId>
 			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>net.zoostar.hc</groupId>
-			<artifactId>hello-crud-entity</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 </project>

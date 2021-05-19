@@ -18,9 +18,11 @@
     	<java.version>11</java.version>
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
-		<sonar.organization>zoostar-consulting-inc</sonar.organization>
+		<sonar.moduleKey>${project.artifactId}</sonar.moduleKey>
 		<sonar.projectKey>Zoostar-Consulting-Inc_hello-crud</sonar.projectKey>
+		<sonar.organization>zoostar-consulting-inc</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
+<!-- 		<sonar.coverage.jacoco.xmlReportPaths>${basedir}/hello-crud-web/target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths> -->
 	</properties>
 	<modules>
 		<module>hello-crud-entity</module>
@@ -51,8 +53,59 @@
 					<artifactId>maven-compiler-plugin</artifactId>
 					<version>3.8.1</version>
 				</plugin>
+				<plugin>
+					<groupId>org.jacoco</groupId>
+					<artifactId>jacoco-maven-plugin</artifactId>
+					<version>0.8.4</version>
+				</plugin>
 			</plugins>
 		</pluginManagement>
+		<plugins>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<configuration>
+					<append>true</append>
+				</configuration>
+				<executions>
+					<execution>
+						<id>prepare-agent</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>report</id>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>default-check</id>
+						<goals>
+							<goal>check</goal>
+						</goals>
+						<configuration>
+							<rules>
+								<rule>
+									<element>CLASS</element>
+									<excludes>
+										<exclude>*Test</exclude>
+									</excludes>
+									<limits>
+										<limit>
+											<counter>LINE</counter>
+											<value>COVEREDRATIO</value>
+											<minimum>90%</minimum>
+										</limit>
+									</limits>
+								</rule>
+							</rules>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
 	</build>
 	<distributionManagement>
 	    <repository>
