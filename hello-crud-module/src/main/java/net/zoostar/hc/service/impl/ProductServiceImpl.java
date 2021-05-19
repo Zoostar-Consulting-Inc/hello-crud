@@ -25,7 +25,7 @@ public class ProductServiceImpl implements ProductService {
 	@Autowired
 	protected ProductRepository repository;
 	
-	protected final Validator<Product> productSkuValidator = productSkuValidator();
+	private final Validator<Product> productSkuValidator = productSkuValidator();
 
 	@Override
 	@Transactional(readOnly = false)
