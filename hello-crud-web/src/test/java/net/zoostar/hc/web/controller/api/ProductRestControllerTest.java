@@ -63,6 +63,8 @@ import net.zoostar.hc.web.request.RequestProduct;
 @ContextConfiguration(locations = {"classpath:META-INF/applicationContext-web.xml"})
 class ProductRestControllerTest {
 	
+	private static final String END_POINT = "/api/product/secured/";
+	
 	protected final ObjectMapper mapper = new ObjectMapper();
 	
 	protected List<Product> entities;
@@ -99,7 +101,6 @@ class ProductRestControllerTest {
 
 	@Test
 	void testCreateSuccess() throws Exception {
-		var url = "/secured/api/product";
 		var page = page(entities, PageRequest.of(0, 1));
 		var entity = page.getContent().get(0);
 		var id = entity.getId();
@@ -116,9 +117,9 @@ class ProductRestControllerTest {
 		
 		//THEN
 		String value = mapper.writeValueAsString(request);
-		log.info("Perform POST for URL: {}", url);
+		log.info("Perform POST for URL: {}", END_POINT);
 		log.info("Sending create request: {}", value);
-		var result = mockMvc.perform(post(url).
+		var result = mockMvc.perform(post(END_POINT).
 	    		contentType(MediaType.APPLICATION_JSON).
 	    		content(value).
 	    		accept(MediaType.APPLICATION_JSON_VALUE)).
@@ -148,7 +149,6 @@ class ProductRestControllerTest {
 
 	@Test
 	void testCreateFailureDuplicateEntity() throws Exception {
-		var url = "/secured/api/product";
 		var page = page(entities, PageRequest.of(0, 1));
 		var entity = page.getContent().get(0);
 		
@@ -164,9 +164,9 @@ class ProductRestControllerTest {
 		
 		//THEN
 		String value = mapper.writeValueAsString(request);
-		log.info("Perform POST for URL: {}", url);
+		log.info("Perform POST for URL: {}", END_POINT);
 		log.info("Sending create request for duplicate entity: {}", value);
-		mockMvc.perform(post(url).
+		mockMvc.perform(post(END_POINT).
 	    		contentType(MediaType.APPLICATION_JSON).
 	    		content(value).
 	    		accept(MediaType.APPLICATION_JSON_VALUE)).
@@ -175,7 +175,6 @@ class ProductRestControllerTest {
 
 	@Test
 	void testCreateFailureMissingRequiredFieldException() throws Exception {
-		var url = "/secured/api/product";
 		var page = page(entities, PageRequest.of(0, 1));
 		var entity = page.getContent().get(0);
 		
@@ -186,9 +185,9 @@ class ProductRestControllerTest {
 
 		//THEN
 		String value = mapper.writeValueAsString(request);
-		log.info("Perform POST for URL: {}", url);
+		log.info("Perform POST for URL: {}", END_POINT);
 		log.info("Sending create request: {}", value);
-		mockMvc.perform(post(url).
+		mockMvc.perform(post(END_POINT).
 	    		contentType(MediaType.APPLICATION_JSON).
 	    		content(value).
 	    		accept(MediaType.APPLICATION_JSON_VALUE)).
@@ -199,7 +198,7 @@ class ProductRestControllerTest {
 	void testRetrieveByPageOneOfMany() throws Exception {
 		int number = 0;
 		int limit = 3;
-		var url = new StringBuilder("/secured/api/product/").
+		var url = new StringBuilder(END_POINT).
 				append(number).append("?limit=").append(limit).toString();
 		
 		var request = PageRequest.of(number, limit);
@@ -211,7 +210,6 @@ class ProductRestControllerTest {
 	    var result = mockMvc.perform(get(url).
 			accept(MediaType.APPLICATION_JSON_VALUE)).
 			andExpect(status().isOk()).
-			andExpect(content().contentType(MediaType.APPLICATION_JSON)).
 			andExpect(content().string(mapper.writeValueAsString(page))).
 			andReturn();
 	    assertNotNull(result);
@@ -239,7 +237,7 @@ class ProductRestControllerTest {
 	void testRetrieveByPageNextOfMany() throws Exception {
 		int number = 1;
 		int limit = 3;
-		var url = new StringBuilder("/secured/api/product/").
+		var url = new StringBuilder(END_POINT).
 				append(number).append("?limit=").append(limit).toString();
 		
 		var request = PageRequest.of(number, limit);
@@ -251,8 +249,7 @@ class ProductRestControllerTest {
 	    var result = mockMvc.perform(get(url).
 			accept(MediaType.APPLICATION_JSON_VALUE)).
 			andExpect(status().isOk()).
-			andExpect(content().contentType(MediaType.APPLICATION_JSON)).
-			andExpect(content().string(mapper.writeValueAsString(page))).
+			andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE)).
 			andReturn();
 	    assertNotNull(result);
 
@@ -279,7 +276,7 @@ class ProductRestControllerTest {
 	void testRetrieveByPageLastOfMany() throws Exception {
 		int number = 3;
 		int limit = 3;
-		var url = new StringBuilder("/secured/api/product/").
+		var url = new StringBuilder(END_POINT).
 				append(number).append("?limit=").append(limit).toString();
 		
 		var request = PageRequest.of(number, limit);
@@ -292,7 +289,6 @@ class ProductRestControllerTest {
 			accept(MediaType.APPLICATION_JSON_VALUE)).
 			andExpect(status().isOk()).
 			andExpect(content().contentType(MediaType.APPLICATION_JSON)).
-			andExpect(content().string(mapper.writeValueAsString(page))).
 			andReturn();
 	    assertNotNull(result);
 
@@ -317,7 +313,6 @@ class ProductRestControllerTest {
 	
 	@Test
 	void testUpdateSuccess() throws Exception {
-		var url = "/secured/api/product";
 		var page = page(entities, PageRequest.of(0, 1));
 		var existingEntity = page.getContent().get(0);
 		var entity = new Product(existingEntity);
@@ -339,9 +334,9 @@ class ProductRestControllerTest {
 		
 		//THEN
 		String value = mapper.writeValueAsString(request);
-		log.info("Perform PUT for URL: {}", url);
+		log.info("Perform PUT for URL: {}", END_POINT);
 		log.info("Sending update request: {}", value);
-		var result = mockMvc.perform(put(url).
+		var result = mockMvc.perform(put(END_POINT).
 	    		contentType(MediaType.APPLICATION_JSON).
 	    		content(value).
 	    		accept(MediaType.APPLICATION_JSON_VALUE)).
@@ -368,7 +363,6 @@ class ProductRestControllerTest {
 	
 	@Test
 	void testUpdateFailureMissingEntity() throws Exception {
-		var url = "/secured/api/product";
 		var page = page(entities, PageRequest.of(0, 1));
 		var existingEntity = page.getContent().get(0);
 		var entity = new Product(existingEntity);
@@ -386,9 +380,9 @@ class ProductRestControllerTest {
 		
 		//THEN
 		String value = mapper.writeValueAsString(request);
-		log.info("Perform PUT for URL: {}", url);
+		log.info("Perform PUT for URL: {}", END_POINT);
 		log.info("Sending update request: {}", value);
-		mockMvc.perform(put(url).
+		mockMvc.perform(put(END_POINT).
 	    		contentType(MediaType.APPLICATION_JSON).
 	    		content(value).
 	    		accept(MediaType.APPLICATION_JSON_VALUE)).
@@ -397,7 +391,6 @@ class ProductRestControllerTest {
 	
 	@Test
 	void testDeleteSuccess() throws Exception {
-		String url = "/secured/api/product";
 		var entity = page(entities, PageRequest.of(0, 1)).getContent().get(0);
 		String id = entity.getId();
 		
@@ -414,9 +407,9 @@ class ProductRestControllerTest {
 		Map<String, String> request = new HashMap<>(1);
 		request.put("sku", sku);
 		String value = mapper.writeValueAsString(request);
-		log.info("Perform DELETE for URL: {}", url);
+		log.info("Perform DELETE for URL: {}", END_POINT);
 		log.info("Sending delete request: {}", value);
-		var result = mockMvc.perform(delete(url).
+		var result = mockMvc.perform(delete(END_POINT).
 	    		contentType(MediaType.APPLICATION_JSON).
 	    		content(value).
 	    		accept(MediaType.APPLICATION_JSON_VALUE)).
@@ -438,8 +431,6 @@ class ProductRestControllerTest {
 	
 	@Test
 	void testDeleteFailureMissingEntity() throws Exception {
-		String url = "/secured/api/product";
-		
 		//GIVEN
 		String sku = "sku";
 		
@@ -447,9 +438,9 @@ class ProductRestControllerTest {
 		Map<String, String> request = new HashMap<>(1);
 		request.put("sku", sku);
 		String value = mapper.writeValueAsString(request);
-		log.info("Perform DELETE for URL: {}", url);
+		log.info("Perform DELETE for URL: {}", END_POINT);
 		log.info("Sending delete request: {}", value);
-		mockMvc.perform(delete(url).
+		mockMvc.perform(delete(END_POINT).
 	    		contentType(MediaType.APPLICATION_JSON).
 	    		content(value).
 	    		accept(MediaType.APPLICATION_JSON_VALUE)).

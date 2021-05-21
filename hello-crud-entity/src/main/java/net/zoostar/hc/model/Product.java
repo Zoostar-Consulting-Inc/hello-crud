@@ -57,7 +57,7 @@ public class Product implements Persistable<String> {
 	}
 	
 	public void setNew(boolean isNew) {
-		log.warn("setNew({}) will be ignored!", isNew);
+		log.debug("setNew({}) will be ignored!", isNew);
 	}
 
 	@Override
