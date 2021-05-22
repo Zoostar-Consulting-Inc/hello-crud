@@ -3,26 +3,22 @@ package net.zoostar.hc.web.controller.api;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -32,11 +28,6 @@ import net.zoostar.hc.model.User;
 import net.zoostar.hc.service.impl.UserServiceImpl;
 import net.zoostar.hc.web.request.RequestUser;
 
-@WebAppConfiguration
-@ActiveProfiles({"dev", "hsql-dev"})
-@ExtendWith(MockitoExtension.class)
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(locations = {"classpath:META-INF/applicationContext-web.xml"})
 class UserRestControllerTest extends AbstractApiRestController<User> {
 	
 	private static final String END_POINT = "/api/user";
@@ -80,13 +71,15 @@ class UserRestControllerTest extends AbstractApiRestController<User> {
 				andReturn();
 		
 		//THEN
+		assertTrue(request.toEntity().isNew());
 		var response = result.getResponse();
 		assertEquals(HttpStatus.CREATED.value(), response.getStatus());
 		assertEquals(MediaType.APPLICATION_JSON_VALUE, response.getContentType());
 		
 		var user = mapper.readValue(response.getContentAsString(), User.class);
 		log.info("Created new entity: {}", user);
-		assertNotEquals(entity, null);
+		assertNotEquals(user, null);
+		assertFalse(entity.isNew());
 		assertEquals(entity, user);
 		assertEquals(entity.getClass(), user.getClass());
 		assertEquals(entity.hashCode(), user.hashCode());
@@ -95,6 +88,55 @@ class UserRestControllerTest extends AbstractApiRestController<User> {
 		assertEquals(entity.getEmail(), entity.getEmail());
 		assertEquals(entity.getFirstName(), user.getFirstName());
 		assertEquals(entity.getLastName(), user.getLastName());
+	}
+
+	@Test
+	void testCreateFailureDuplicateEntity() throws Exception {
+		var entity = entities.get(0);
+		var email = entity.getEmail();
+		
+		//GIVEN
+		var request = new RequestUser();
+		request.setEmail(email);
+		request.setFirstName(entity.getFirstName());
+		request.setLastName(entity.getLastName());
+
+		//MOCK
+		when(repository.findByEmail(email)).thenReturn(Optional.of(entity));
+
+		//WHEN
+		log.info("Perform POST for URL: {}", END_POINT);
+		var result = mockMvc.perform(post(END_POINT).
+	    		contentType(MediaType.APPLICATION_JSON).
+	    		content(mapper.writeValueAsString(request)).
+	    		accept(MediaType.APPLICATION_JSON_VALUE)).
+				andReturn();
+		
+		//THEN
+		var response = result.getResponse();
+		assertEquals(HttpStatus.EXPECTATION_FAILED.value(), response.getStatus());
+	}
+
+	@Test
+	void testCreateFailureMissingRequiredFieldEmail() throws Exception {
+		var entity = entities.get(0);
+		
+		//GIVEN
+		var request = new RequestUser();
+		request.setFirstName(entity.getFirstName());
+		request.setLastName(entity.getLastName());
+
+		//WHEN
+		log.info("Perform POST for URL: {}", END_POINT);
+		var result = mockMvc.perform(post(END_POINT).
+	    		contentType(MediaType.APPLICATION_JSON).
+	    		content(mapper.writeValueAsString(request)).
+	    		accept(MediaType.APPLICATION_JSON_VALUE)).
+				andReturn();
+		
+		//THEN
+		var response = result.getResponse();
+		assertEquals(HttpStatus.EXPECTATION_FAILED.value(), response.getStatus());
 	}
 
 	protected String path() {

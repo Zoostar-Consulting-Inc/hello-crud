@@ -24,7 +24,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -59,17 +58,6 @@ public abstract class AbstractApiRestController<T extends AbstractStringPersista
 		Assert.assertNull(GatewayAuditFilterChain.GATEWAY_AUDIT_HOLDER.get());
 		mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).
 				addFilters(filter).build();
-	}
-
-	protected List<T> entities2(String path, Class<T> clazz) {
-		try {
-			return Collections.unmodifiableList(mapper.readValue(
-					new ClassPathResource(path).getInputStream(),
-					new TypeReference<List<T>>() { }));
-		} catch (IOException e) {
-			log.error(e.getMessage());
-		}
-		return null;
 	}
 
 	protected List<T> entities(String path, Class<T> clazz) throws 
