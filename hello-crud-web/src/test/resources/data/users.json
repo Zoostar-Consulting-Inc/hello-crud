@@ -2,56 +2,67 @@
   {
   	"id": "1",
     "email": "user1@email.com",
-    "name": "User1"
+    "firstName": "First1",
+    "lastName": "Last1"
   },
   {
   	"id": "2",
     "email": "user2@email.com",
-    "name": "User2"
+    "firstName": "First2",
+    "lastName": "Last2"
   },
   {
   	"id": "3",
     "email": "user3@email.com",
-    "name": "User3"
+    "firstName": "First3",
+    "lastName": "Last3"
   },
   {
   	"id": "4",
     "email": "user4@email.com",
-    "name": "User4"
+    "firstName": "First4",
+    "lastName": "Last4"
   },
   {
   	"id": "5",
     "email": "user5@email.com",
-    "name": "User5"
+    "firstName": "First5",
+    "lastName": "Last5"
   },
   {
   	"id": "6",
     "email": "user6@email.com",
-    "name": "User6"
+    "firstName": "First6",
+    "lastName": "Last6"
   },
   {
   	"id": "7",
     "email": "user7@email.com",
-    "name": "User7"
+    "firstName": "First7",
+    "lastName": "Last7"
   },
   {
   	"id": "8",
     "email": "user8@email.com",
-    "name": "User8"
+    "firstName": "First8",
+    "lastName": "Last8"
   },
   {
   	"id": "9",
     "email": "user9@email.com",
-    "name": "User9"
+    "firstName": "First9",
+    "lastName": "Last9"
   },
   {
   	"id": "10",
     "email": "user10@email.com",
-    "name": "User10"
+    "firstName": "First10",
+    "lastName": "Last10"
   },
   {
   	"id": "11",
     "email": "user11@email.com",
-    "name": "User11"
+    "firstName": "First11",
+    "lastName": "Last11"
   }
 ]

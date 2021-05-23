@@ -31,7 +31,7 @@ import net.zoostar.hc.web.request.RequestProduct;
 @Setter
 @Getter
 @RestController
-@RequestMapping(value="/secured/api/product")
+@RequestMapping(value="/api/product/secured")
 public class ProductRestController {
 	
 	@Autowired
