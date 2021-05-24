@@ -57,6 +57,7 @@ class UserRestControllerTest extends AbstractApiRestController<User> {
 		request.setEmail(entity.getEmail());
 		request.setFirstName(entity.getFirstName());
 		request.setLastName(entity.getLastName());
+		request.setSource(entity.getSource());
 
 		//MOCK
 		when(service.getUserManager().getRepository().
@@ -96,10 +97,7 @@ class UserRestControllerTest extends AbstractApiRestController<User> {
 		var email = entity.getEmail();
 		
 		//GIVEN
-		var request = new RequestUser();
-		request.setEmail(email);
-		request.setFirstName(entity.getFirstName());
-		request.setLastName(entity.getLastName());
+		var request = new RequestUser(entity);
 
 		//MOCK
 		when(repository.findByEmail(email)).thenReturn(Optional.of(entity));
@@ -123,6 +121,29 @@ class UserRestControllerTest extends AbstractApiRestController<User> {
 		
 		//GIVEN
 		var request = new RequestUser();
+		request.setFirstName(entity.getFirstName());
+		request.setLastName(entity.getLastName());
+
+		//WHEN
+		log.info("Perform POST for URL: {}", END_POINT);
+		var result = mockMvc.perform(post(END_POINT).
+	    		contentType(MediaType.APPLICATION_JSON).
+	    		content(mapper.writeValueAsString(request)).
+	    		accept(MediaType.APPLICATION_JSON_VALUE)).
+				andReturn();
+		
+		//THEN
+		var response = result.getResponse();
+		assertEquals(HttpStatus.EXPECTATION_FAILED.value(), response.getStatus());
+	}
+
+	@Test
+	void testCreateFailureMissingRequiredFieldSource() throws Exception {
+		var entity = entities.get(0);
+		
+		//GIVEN
+		var request = new RequestUser();
+		request.setEmail(entity.getEmail());
 		request.setFirstName(entity.getFirstName());
 		request.setLastName(entity.getLastName());
 

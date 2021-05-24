@@ -11,6 +11,14 @@ public class RequestUser implements RequestEntity<User> {
 	public RequestUser() {
 		this.user = new User();
 	}
+	
+	public RequestUser(User user) {
+		this();
+		this.user.setEmail(user.getEmail());
+		this.user.setFirstName(user.getFirstName());
+		this.user.setLastName(user.getLastName());
+		this.user.setSource(user.getSource());
+	}
 
 	@Override
 	public User toEntity() {
@@ -39,6 +47,14 @@ public class RequestUser implements RequestEntity<User> {
 
 	public void setLastName(String lastName) {
 		user.setLastName(lastName);
+	}
+	
+	public String getSource() {
+		return user.getSource();
+	}
+	
+	public void setSource(String source) {
+		user.setSource(source);
 	}
 
 }

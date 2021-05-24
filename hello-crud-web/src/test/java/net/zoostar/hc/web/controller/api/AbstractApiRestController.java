@@ -54,6 +54,7 @@ public abstract class AbstractApiRestController<T extends AbstractStringPersista
 		log.info("Executing test: [{}]...", test.getDisplayName());
 		
 		entities = entities(path(), classType());
+		log.info("Loaded {} entities.", entities.size());
 		var filter = new GatewayAuditFilterChain();
 		Assert.assertNull(GatewayAuditFilterChain.GATEWAY_AUDIT_HOLDER.get());
 		mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).
@@ -62,6 +63,7 @@ public abstract class AbstractApiRestController<T extends AbstractStringPersista
 
 	protected List<T> entities(String path, Class<T> clazz) throws 
 	JsonParseException, JsonMappingException, IOException {
+		log.info("Loading {} entities from: {}...", clazz, path);
 		JavaType type = mapper.getTypeFactory().
 				constructCollectionType(List.class, clazz);
 		return Collections.unmodifiableList(mapper.readValue(

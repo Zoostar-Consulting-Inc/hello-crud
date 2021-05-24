@@ -22,7 +22,7 @@ public class UserServiceImpl extends AbstractCrudServiceImpl<User>
 	@Autowired
 	protected UserRepository repository;
 	
-	protected final Validator<User> emailValidator = emailValidator();
+	protected final Validator<User> businessKeyValidator = businessKeyValidator();
 
 	@Override
 	protected User persist(User user) throws DuplicateEntityException {
@@ -35,10 +35,10 @@ public class UserServiceImpl extends AbstractCrudServiceImpl<User>
 
 	@Override
 	protected void preCreateValidation(User user) throws ValidatorException {
-		emailValidator.validate(user);
+		businessKeyValidator.validate(user);
 	}
 
-	protected Validator<User> emailValidator() {
+	protected Validator<User> businessKeyValidator() {
 		return new Validator<User>() {
 
 			@Override
@@ -46,7 +46,10 @@ public class UserServiceImpl extends AbstractCrudServiceImpl<User>
 				if(user == null || StringUtils.isBlank(user.getEmail())) {
 					throw new MissingRequiredFieldException("Missing Required Field: email");
 				}
-				log.info("Passed User Email Validation: {}", user);
+				if(StringUtils.isBlank(user.getSource())) {
+					throw new MissingRequiredFieldException("Missing Required Field: source");
+				}
+				log.info("Passed Business Key Validation: {}", user);
 			}
 
 		};
