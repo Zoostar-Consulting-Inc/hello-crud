@@ -1,10 +1,17 @@
 package net.zoostar.hc.service.impl;
 
-public class DuplicateEntityException extends Exception {
+import net.zoostar.hc.validate.ValidatorException;
+
+public class DuplicateEntityException extends ValidatorException {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+
+	protected DuplicateEntityException(String message) {
+		super(message);
+		// TODO Auto-generated constructor stub
+	}
 
 }

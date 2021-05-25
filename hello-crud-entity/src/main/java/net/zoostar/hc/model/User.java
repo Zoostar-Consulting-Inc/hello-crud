@@ -25,6 +25,15 @@ public class User extends AbstractStringPersistable {
 	private String lastName;
 
 	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("User [email=").append(email).append(", firstName=").append(firstName).append(", lastName=")
+				.append(lastName).append(", getId()=").append(getId()).append(", getSource()=").append(getSource())
+				.append("]");
+		return builder.toString();
+	}
+
+	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
@@ -34,26 +43,11 @@ public class User extends AbstractStringPersistable {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
 		if (!super.equals(obj)) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
 			return false;
 		}
 		User other = (User) obj;
 		return Objects.equals(email, other.email);
-	}
-
-	@Override
-	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("User [email=").append(email).append(", firstName=").append(firstName).append(", lastName=")
-				.append(lastName).append(", getId()=").append(getId()).append(", getSource()=").append(getSource())
-				.append("]");
-		return builder.toString();
 	}
 
 }

@@ -27,29 +27,21 @@ public class Product extends AbstractStringPersistable {
 	@Column(nullable = true, length = 50)
 	private String desc;
 
-	public Product(Product copy) {
-		this.sku = copy.getSku();
-		this.name = copy.getName();
-		this.desc = copy.getDesc();
-	}
-
 	@Override
 	public int hashCode() {
-		return Objects.hash(sku);
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + Objects.hash(sku);
+		return result;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
+		if (!super.equals(obj)) {
 			return false;
 		}
 		Product other = (Product) obj;
 		return Objects.equals(sku, other.sku);
 	}
+
 }

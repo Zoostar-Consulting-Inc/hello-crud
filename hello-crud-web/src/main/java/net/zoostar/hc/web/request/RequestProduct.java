@@ -12,6 +12,14 @@ public class RequestProduct implements RequestEntity<Product> {
 		product = new Product();
 	}
 	
+	public RequestProduct(Product entity) {
+		this();
+		this.product.setDesc(entity.getDesc());
+		this.product.setName(entity.getName());
+		this.product.setSku(entity.getSku());
+		this.product.setSource(entity.getSource());
+	}
+
 	public void setSku(String sku) {
 		product.setSku(sku);
 	}
@@ -34,6 +42,14 @@ public class RequestProduct implements RequestEntity<Product> {
 	
 	public String getDesc() {
 		return product.getDesc();
+	}
+	
+	public String getSource() {
+		return product.getSource();
+	}
+	
+	public void setSource(String source) {
+		product.setSource(source);
 	}
 	
 	@Override
