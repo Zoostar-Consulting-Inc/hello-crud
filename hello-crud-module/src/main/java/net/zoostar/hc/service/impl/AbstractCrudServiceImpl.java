@@ -26,17 +26,17 @@ implements StringPersistableCrudService<T>, InitializingBean {
 	
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		businessKeyValidator = businessKeyValidator();
-		duplicateEntityValidator = duplicateEntityValidator();
-		missingEntityValidator = missingEntityValidator();
+		businessKeyValidator = initializeBusinessKeyValidator();
+		duplicateEntityValidator = initializeDuplicateEntityValidator();
+		missingEntityValidator = initializeMissingEntityValidator();
 		init();
 	}
 
 	@Override
 	@Transactional(readOnly = false)
 	public T create(T persistable) throws ValidatorException {
-		preCreateFilter(persistable);
-		log.info("Persisting new entity: {}...", persistable);
+		var logString = preCreateFilter(persistable);
+		log.info("Persisting new entity: {}...", logString);
 		return getRepository().save(persistable);
 	}
 
@@ -50,8 +50,8 @@ implements StringPersistableCrudService<T>, InitializingBean {
 	@Override
 	@Transactional(readOnly = false)
 	public final T update(T persistable) throws ValidatorException {
-		preUpdateFilter(persistable);
-		log.info("Updating entity: {}...", persistable);
+		var logString = preUpdateFilter(persistable);
+		log.info("Updating entity: {}...", logString);
 		var entity = retrieveByKey(persistable);
 		persistable.setId(entity.getId());
 		return getRepository().save(persistable);
@@ -60,22 +60,24 @@ implements StringPersistableCrudService<T>, InitializingBean {
 	@Override
 	@Transactional(readOnly = false)
 	public void delete(String id) {
-		log.info("Deleting entity by ID: {}", id);
+		log.info("Deleting entity by ID: {}", id.replaceAll("[\n\r\t]", "_"));
 		getRepository().deleteById(id);
 	}
 
-	private final void preCreateFilter(T persistable) throws ValidatorException {
+	private final String preCreateFilter(final T persistable) throws ValidatorException {
 		preNullValidation(persistable);
 		log.info("Proceeding with validations for entity: {}...", persistable);
 		preCreateValidation(persistable);
 		duplicateEntityValidator.validate(persistable);
+		return persistable.toString().replaceAll("[\n\r\t]", "_");
 	}
 
-	private final void preUpdateFilter(T persistable) throws ValidatorException {
+	private final String preUpdateFilter(final T persistable) throws ValidatorException {
 		preNullValidation(persistable);
 		log.info("Proceeding with validations for entity: {}...", persistable);
 		preUpdateValidation(persistable);
 		missingEntityValidator.validate(persistable);
+		return persistable.toString().replaceAll("[\n\r\t]", "_");
 	}
 
 	protected void preCreateValidation(T persistable) throws ValidatorException {
@@ -94,14 +96,14 @@ implements StringPersistableCrudService<T>, InitializingBean {
 	protected void preUpdateValidation(T entity) throws ValidatorException {
 	}
 
-	protected Validator<T> duplicateEntityValidator() {
+	protected Validator<T> initializeDuplicateEntityValidator() {
 		return new Validator<>() {
 
 			@Override
 			public void validate(T persistable) throws DuplicateEntityException {
 				log.info("Validating duplicate entity for: {}...", persistable);
 				try {
-					T entity = retrieveByKey(persistable);
+					var entity = retrieveByKey(persistable);
 					throw new DuplicateEntityException("Found existing entity with ID: " + entity.getId());
 				} catch(MissingEntityException e) {
 					log.info("No duplicate entity found for: {}.", persistable);
@@ -111,13 +113,13 @@ implements StringPersistableCrudService<T>, InitializingBean {
 		};
 	}
 
-	protected Validator<T> missingEntityValidator() {
+	protected Validator<T> initializeMissingEntityValidator() {
 		return new Validator<>() {
 
 			@Override
 			public void validate(T persistable) throws ValidatorException {
 				log.info("Validate whether entity exists: {}...", persistable);
-				T entity = retrieveByKey(persistable);
+				var entity = retrieveByKey(persistable);
 				log.info("Entity found: {}.", entity);
 			}
 			
@@ -130,10 +132,10 @@ implements StringPersistableCrudService<T>, InitializingBean {
 		}
 	}
 	
-	protected abstract Validator<T> businessKeyValidator() throws ValidatorException;
+	protected abstract Validator<T> initializeBusinessKeyValidator() throws ValidatorException;
 
 	protected abstract T retrieveByKey(T persistable) throws MissingEntityException;
 	
-	protected abstract void init() throws Exception;
+	protected abstract void init();
 	
 }

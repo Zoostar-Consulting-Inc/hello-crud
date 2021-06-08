@@ -21,7 +21,7 @@ implements ProductService {
 	protected ProductRepository repository;
 	
 	@Override
-	protected void init() throws Exception {
+	protected void init() {
 	}
 
 	@Override
@@ -52,7 +52,7 @@ implements ProductService {
 	}
 
 	@Override
-	protected Validator<Product> businessKeyValidator() throws ValidatorException {
+	protected Validator<Product> initializeBusinessKeyValidator() throws ValidatorException {
 		return new Validator<>() {
 
 			@Override

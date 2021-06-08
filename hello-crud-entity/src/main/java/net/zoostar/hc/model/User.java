@@ -26,7 +26,7 @@ public class User extends AbstractStringPersistable {
 
 	@Override
 	public String toString() {
-		StringBuilder builder = new StringBuilder();
+		var builder = new StringBuilder();
 		builder.append("User [email=").append(email).append(", firstName=").append(firstName).append(", lastName=")
 				.append(lastName).append(", getId()=").append(getId()).append(", getSource()=").append(getSource())
 				.append("]");
@@ -35,7 +35,7 @@ public class User extends AbstractStringPersistable {
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
+		final var prime = 31;
 		int result = super.hashCode();
 		result = prime * result + Objects.hash(email);
 		return result;

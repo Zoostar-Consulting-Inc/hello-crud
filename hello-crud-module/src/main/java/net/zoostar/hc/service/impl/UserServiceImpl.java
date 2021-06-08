@@ -21,7 +21,7 @@ implements UserService {
 	protected UserRepository repository;
 	
 	@Override
-	protected void init() throws Exception {
+	protected void init() {
 	}
 
 	@Override
@@ -51,7 +51,7 @@ implements UserService {
 		businessKeyValidator.validate(user);
 	}
 
-	protected Validator<User> businessKeyValidator() {
+	protected Validator<User> initializeBusinessKeyValidator() {
 		return new Validator<>() {
 
 			@Override
