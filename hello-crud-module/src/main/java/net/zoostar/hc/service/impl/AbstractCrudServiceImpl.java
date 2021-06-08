@@ -16,6 +16,9 @@ import net.zoostar.hc.validate.ValidatorException;
 public abstract class AbstractCrudServiceImpl<T extends AbstractStringPersistable>
 implements StringPersistableCrudService<T>, InitializingBean {
 
+	private static final String REPLACE_FROM = "[\\n\\r\\t]";
+	private static final String REPLACE_TO = "_";
+	
 	protected final Logger log = LoggerFactory.getLogger(getClass());
 	
 	protected Validator<T> businessKeyValidator;
@@ -35,8 +38,8 @@ implements StringPersistableCrudService<T>, InitializingBean {
 	@Override
 	@Transactional(readOnly = false)
 	public T create(T persistable) throws ValidatorException {
-		var logString = preCreateFilter(persistable);
-		log.info("Persisting new entity: {}...", logString);
+		var loggable = preCreateFilter(persistable);
+		log.info("Persisting new entity: {}...", loggable);
 		return getRepository().save(persistable);
 	}
 
@@ -60,24 +63,24 @@ implements StringPersistableCrudService<T>, InitializingBean {
 	@Override
 	@Transactional(readOnly = false)
 	public void delete(String id) {
-		log.info("Deleting entity by ID: {}", id.replaceAll("[\n\r\t]", "_"));
+		log.info("Deleting entity by ID: {}", id.replaceAll(REPLACE_FROM, REPLACE_TO));
 		getRepository().deleteById(id);
 	}
 
 	private final String preCreateFilter(final T persistable) throws ValidatorException {
-		preNullValidation(persistable);
-		log.info("Proceeding with validations for entity: {}...", persistable);
+		String loggable = preNullValidation(persistable);
+		log.info("Proceeding with validations for entity: {}...", loggable);
 		preCreateValidation(persistable);
 		duplicateEntityValidator.validate(persistable);
-		return persistable.toString().replaceAll("[\n\r\t]", "_");
+		return loggable;
 	}
 
 	private final String preUpdateFilter(final T persistable) throws ValidatorException {
-		preNullValidation(persistable);
-		log.info("Proceeding with validations for entity: {}...", persistable);
+		String loggable = preNullValidation(persistable);
+		log.info("Proceeding with validations for entity: {}...", loggable);
 		preUpdateValidation(persistable);
 		missingEntityValidator.validate(persistable);
-		return persistable.toString().replaceAll("[\n\r\t]", "_");
+		return loggable;
 	}
 
 	protected void preCreateValidation(T persistable) throws ValidatorException {
@@ -101,7 +104,6 @@ implements StringPersistableCrudService<T>, InitializingBean {
 
 			@Override
 			public void validate(T persistable) throws DuplicateEntityException {
-				log.info("Validating duplicate entity for: {}...", persistable);
 				try {
 					var entity = retrieveByKey(persistable);
 					throw new DuplicateEntityException("Found existing entity with ID: " + entity.getId());
@@ -118,7 +120,6 @@ implements StringPersistableCrudService<T>, InitializingBean {
 
 			@Override
 			public void validate(T persistable) throws ValidatorException {
-				log.info("Validate whether entity exists: {}...", persistable);
 				var entity = retrieveByKey(persistable);
 				log.info("Entity found: {}.", entity);
 			}
@@ -126,10 +127,11 @@ implements StringPersistableCrudService<T>, InitializingBean {
 		};
 	}
 	
-	private void preNullValidation(T persistable) {
+	private String preNullValidation(T persistable) {
 		if(persistable == null) {
 			throw new IllegalArgumentException("Entity may not be null!");
 		}
+		return persistable.toString().replaceAll(REPLACE_FROM, REPLACE_TO);
 	}
 	
 	protected abstract Validator<T> initializeBusinessKeyValidator() throws ValidatorException;
