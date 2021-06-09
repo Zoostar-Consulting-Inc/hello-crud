@@ -69,7 +69,7 @@ public abstract class AbstractCrudControllerTest<T extends AbstractStringPersist
 	MockMvc mockMvc;
 	
 	@BeforeEach
-	protected void beforeEach(TestInfo test) throws Exception {
+	protected final void beforeEach(TestInfo test) throws Exception {
 		System.out.println();
 		log.info("Executing test: [{}]...", test.getDisplayName());
 		
@@ -79,12 +79,11 @@ public abstract class AbstractCrudControllerTest<T extends AbstractStringPersist
 		Assert.assertNull(GatewayAuditFilterChain.GATEWAY_AUDIT_HOLDER.get());
 		mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).
 				addFilters(filter).build();
-		additionalSetup(test);
+		additionalSetup();
 	}
 
-	protected void additionalSetup(TestInfo test) throws Exception {
-	}
-
+	protected abstract void additionalSetup() throws Exception;
+	
 	@Test
 	void testCreateSuccess() throws Exception {
 		final var expectedEntity = entities.get(0);

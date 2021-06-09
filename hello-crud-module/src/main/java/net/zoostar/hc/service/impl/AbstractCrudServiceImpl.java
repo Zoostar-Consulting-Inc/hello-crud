@@ -28,7 +28,7 @@ implements StringPersistableCrudService<T>, InitializingBean {
 	protected Validator<T> missingEntityValidator;
 	
 	@Override
-	public void afterPropertiesSet() throws Exception {
+	public final void afterPropertiesSet() throws Exception {
 		businessKeyValidator = initializeBusinessKeyValidator();
 		duplicateEntityValidator = initializeDuplicateEntityValidator();
 		missingEntityValidator = initializeMissingEntityValidator();
@@ -138,6 +138,8 @@ implements StringPersistableCrudService<T>, InitializingBean {
 
 	protected abstract T retrieveByKey(T persistable) throws MissingEntityException;
 	
-	protected abstract void init();
+	protected void init() {
+		// Further initialization if needed by extending classes
+	}
 	
 }

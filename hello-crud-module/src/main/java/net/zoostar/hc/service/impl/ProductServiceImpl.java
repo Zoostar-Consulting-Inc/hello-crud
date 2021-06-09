@@ -21,10 +21,6 @@ implements ProductService {
 	protected ProductRepository repository;
 	
 	@Override
-	protected void init() {
-	}
-
-	@Override
 	protected Product retrieveByKey(Product product) throws MissingEntityException {
 		return retrieveBySku(product.getSku());
 	}

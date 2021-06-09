@@ -21,10 +21,6 @@ implements UserService {
 	protected UserRepository repository;
 	
 	@Override
-	protected void init() {
-	}
-
-	@Override
 	protected User retrieveByKey(User user) throws MissingEntityException {
 		return retrieveByEmail(user.getEmail());
 	}

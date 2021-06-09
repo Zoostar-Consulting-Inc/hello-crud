@@ -39,6 +39,7 @@ public class ProductRestController extends AbstractCrudController<Product> {
 		return super.create(request);
 	}
 	
+	@Override
 	@GetMapping(value = "/{number}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Page<Product>> retrieve(@PathVariable int number, @RequestParam int limit) {
 		return super.retrieve(number, limit);
@@ -55,6 +56,7 @@ public class ProductRestController extends AbstractCrudController<Product> {
 		return super.deleteByKey(request);
 	}
 
+	@Override
 	@PostMapping(value = "/retrieve", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Product> retrieveByKey(@RequestBody Map<String, String> request) {
 		return super.retrieveByKey(request);

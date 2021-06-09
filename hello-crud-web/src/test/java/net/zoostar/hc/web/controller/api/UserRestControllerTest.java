@@ -11,7 +11,6 @@ import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.stubbing.OngoingStubbing;
@@ -41,7 +40,7 @@ class UserRestControllerTest extends AbstractCrudControllerTest<User> {
 	protected UserRestController service;
 
 	@Override
-	protected void additionalSetup(TestInfo test) throws Exception {
+	protected void additionalSetup() throws Exception {
 		service.setCrudManager(crudManager);
 		crudManager.afterPropertiesSet();
 	}
