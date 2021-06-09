@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
@@ -46,7 +47,6 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import net.zoostar.hc.model.AbstractStringPersistable;
-import net.zoostar.hc.service.StringPersistableCrudService;
 import net.zoostar.hc.web.filter.GatewayAuditFilterChain;
 import net.zoostar.hc.web.request.RequestEntity;
 
@@ -120,6 +120,17 @@ public abstract class AbstractCrudControllerTest<T extends AbstractStringPersist
 		assertEquals(expectedEntity.getId(), actualEntity.getId());
 		
 		additionalSuccessAssertions(expectedEntity, actualEntity);
+	}
+	
+	@Test
+	void testCreateFailureNullEntity() throws Exception {
+		//GIVEN
+		T request = null;
+		
+		//THEN
+		Assertions.assertThrows(IllegalArgumentException.class, () -> {
+			getService().getCrudManager().create(request);
+		});
 	}
 
 	@Test
@@ -219,7 +230,7 @@ public abstract class AbstractCrudControllerTest<T extends AbstractStringPersist
 		final var entity = entities.get(0);
 		
 		//GIVEN
-		Map<String, String> request = retrieveByKeyRequest(entity);
+		Map<String, String> request = retrieveByKeyRequest(false, entity);
 		
 		//MOCK
 		whenFindEntity(entity).thenReturn(Optional.of(entity));
@@ -252,11 +263,33 @@ public abstract class AbstractCrudControllerTest<T extends AbstractStringPersist
 	}
 	
 	@Test
+	void testRetrieveByKeyFailureNullKey() throws Exception {
+		final var entity = entities.get(0);
+		
+		//GIVEN
+		Map<String, String> request = retrieveByKeyRequest(true, entity);
+		
+		//WHEN
+		String endPoint = getEndPoint() + "/retrieve";
+		log.info("Perform POST for URL: {}", endPoint);
+		var result = mockMvc.perform(post(endPoint).
+	    		contentType(MediaType.APPLICATION_JSON).
+	    		content(mapper.writeValueAsString(request)).
+	    		accept(MediaType.APPLICATION_JSON_VALUE)).
+				andReturn();
+		
+		//THEN
+		var response = result.getResponse();
+		assertEquals(HttpStatus.EXPECTATION_FAILED.value(), response.getStatus());
+		assertEquals("", response.getContentAsString());
+	}
+	
+	@Test
 	void testRetrieveByKeyFailureMissingEntityException() throws Exception {
 		final var entity = entities.get(0);
 		
 		//GIVEN
-		Map<String, String> request = retrieveByKeyRequest(entity);
+		Map<String, String> request = retrieveByKeyRequest(false, entity);
 		
 		//MOCK
 		whenFindEntity(entity).thenReturn(Optional.ofNullable(null));
@@ -353,7 +386,7 @@ public abstract class AbstractCrudControllerTest<T extends AbstractStringPersist
 		final var entity = entities.get(0);
 		
 		//GIVEN
-		Map<String, String> request = retrieveByKeyRequest(entity);
+		Map<String, String> request = retrieveByKeyRequest(false, entity);
 		
 		//MOCK
 		whenFindEntity(entity).thenReturn(Optional.of(entity));
@@ -389,7 +422,7 @@ public abstract class AbstractCrudControllerTest<T extends AbstractStringPersist
 		final var entity = entities.get(0);
 		
 		//GIVEN
-		Map<String, String> request = retrieveByKeyRequest(entity);
+		Map<String, String> request = retrieveByKeyRequest(false, entity);
 		
 		//MOCK
 		whenFindEntity(entity).thenReturn(Optional.ofNullable(null));
@@ -475,6 +508,16 @@ public abstract class AbstractCrudControllerTest<T extends AbstractStringPersist
 		return new StringBuilder(getEndPoint()).append("/").
 				append(number).append("?limit=").append(limit).toString();
 	}
+	
+	protected final Map<String, String> retrieveByKeyRequest(boolean testForNullKey, T entity) {
+		Map<String, String> keys = null;
+		if(testForNullKey) {
+			keys = Collections.emptyMap();
+		} else {
+			keys = retrieveByKeyRequest(entity);
+		}
+		return keys;
+	}
 
 	protected abstract Class<T> getClazz();
 
@@ -488,6 +531,4 @@ public abstract class AbstractCrudControllerTest<T extends AbstractStringPersist
 	
 	protected abstract AbstractCrudController<T> getService();
 
-	protected abstract StringPersistableCrudService<T> getCrudManager();
-	
 }

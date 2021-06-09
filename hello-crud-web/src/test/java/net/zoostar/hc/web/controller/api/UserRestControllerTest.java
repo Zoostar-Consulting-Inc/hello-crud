@@ -19,15 +19,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import lombok.Getter;
-import lombok.Setter;
 import net.zoostar.hc.dao.UserRepository;
 import net.zoostar.hc.model.User;
 import net.zoostar.hc.service.impl.UserServiceImpl;
 import net.zoostar.hc.web.request.RequestEntity;
 import net.zoostar.hc.web.request.RequestUser;
 
-@Getter
-@Setter
 class UserRestControllerTest extends AbstractCrudControllerTest<User> {
 	
 	@Mock
@@ -36,6 +33,7 @@ class UserRestControllerTest extends AbstractCrudControllerTest<User> {
 	@InjectMocks
 	protected UserServiceImpl crudManager;
 	
+	@Getter
 	@Autowired
 	protected UserRestController service;
 
