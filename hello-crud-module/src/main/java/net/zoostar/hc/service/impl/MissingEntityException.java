@@ -1,6 +1,8 @@
 package net.zoostar.hc.service.impl;
 
-public class MissingEntityException extends Exception {
+import net.zoostar.hc.validate.ValidatorException;
+
+public class MissingEntityException extends ValidatorException {
 
 	/**
 	 * 
