@@ -3,7 +3,9 @@ package net.zoostar.hc.web.controller.api;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -17,7 +19,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.junit.Assert;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
@@ -128,9 +129,13 @@ public abstract class AbstractCrudControllerTest<T extends AbstractStringPersist
 		T request = null;
 		
 		//THEN
-		Assertions.assertThrows(IllegalArgumentException.class, () -> {
+		try {
 			getService().getCrudManager().create(request);
-		});
+			fail("Expected an IllegalArgumentException to be thrown");
+		} catch(IllegalArgumentException e) {
+			log.info("Expected: {}", e.getMessage());
+			assertNotNull(e);
+		}
 	}
 
 	@Test
