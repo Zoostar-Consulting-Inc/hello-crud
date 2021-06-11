@@ -3,9 +3,8 @@ package net.zoostar.hc.web.controller.api;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -48,6 +47,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import net.zoostar.hc.model.AbstractStringPersistable;
+import net.zoostar.hc.service.StringPersistableCrudService;
 import net.zoostar.hc.web.filter.GatewayAuditFilterChain;
 import net.zoostar.hc.web.request.RequestEntity;
 
@@ -125,17 +125,13 @@ public abstract class AbstractCrudControllerTest<T extends AbstractStringPersist
 	
 	@Test
 	void testCreateFailureNullEntity() throws Exception {
+		StringPersistableCrudService<T>  crudManager = getService().getCrudManager();
+		
 		//GIVEN
 		T request = null;
 		
 		//THEN
-		try {
-			getService().getCrudManager().create(request);
-			fail("Expected an IllegalArgumentException to be thrown");
-		} catch(IllegalArgumentException e) {
-			log.info("Expected: {}", e.getMessage());
-			assertNotNull(e);
-		}
+		assertThrows(IllegalArgumentException.class, () -> crudManager.create(request));
 	}
 
 	@Test
