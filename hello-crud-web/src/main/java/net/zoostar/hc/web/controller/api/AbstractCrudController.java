@@ -39,7 +39,7 @@ public abstract class AbstractCrudController<T extends AbstractStringPersistable
 		Page<T> entities = null;
 		try {
 			entities = getCrudManager().retrieve(number, limit);
-			log.info("Retrieved {} entities for page {}.", entities.getSize(), number);
+			log.info("Retrieved {} entities for page {}.", entities.getNumberOfElements(), number);
 		} catch(IllegalArgumentException e) {
 			status = HttpStatus.EXPECTATION_FAILED;
 			log.warn(e.getMessage());

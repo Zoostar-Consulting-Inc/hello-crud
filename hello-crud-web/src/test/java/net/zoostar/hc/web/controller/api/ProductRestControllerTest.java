@@ -19,15 +19,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import lombok.Getter;
-import lombok.Setter;
 import net.zoostar.hc.dao.ProductRepository;
 import net.zoostar.hc.model.Product;
 import net.zoostar.hc.service.impl.ProductServiceImpl;
 import net.zoostar.hc.web.request.RequestEntity;
 import net.zoostar.hc.web.request.RequestProduct;
 
-@Getter
-@Setter
 class ProductRestControllerTest extends AbstractCrudControllerTest<Product> {
 	
 	@Mock
@@ -35,7 +32,8 @@ class ProductRestControllerTest extends AbstractCrudControllerTest<Product> {
 
 	@InjectMocks
 	protected ProductServiceImpl crudManager;
-	
+
+	@Getter
 	@Autowired
 	protected ProductRestController service;
 

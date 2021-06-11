@@ -3,6 +3,7 @@ package net.zoostar.hc.web.controller.api;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -121,6 +122,17 @@ public abstract class AbstractCrudControllerTest<T extends AbstractStringPersist
 		
 		additionalSuccessAssertions(expectedEntity, actualEntity);
 	}
+	
+	@Test
+	void testCreateFailureNullEntity() throws Exception {
+		StringPersistableCrudService<T>  crudManager = getService().getCrudManager();
+		
+		//GIVEN
+		T request = null;
+		
+		//THEN
+		assertThrows(IllegalArgumentException.class, () -> crudManager.create(request));
+	}
 
 	@Test
 	void testCreateFailureDuplicateEntity() throws Exception {
@@ -219,7 +231,7 @@ public abstract class AbstractCrudControllerTest<T extends AbstractStringPersist
 		final var entity = entities.get(0);
 		
 		//GIVEN
-		Map<String, String> request = retrieveByKeyRequest(entity);
+		Map<String, String> request = retrieveByKeyRequest(false, entity);
 		
 		//MOCK
 		whenFindEntity(entity).thenReturn(Optional.of(entity));
@@ -252,11 +264,33 @@ public abstract class AbstractCrudControllerTest<T extends AbstractStringPersist
 	}
 	
 	@Test
+	void testRetrieveByKeyFailureNullKey() throws Exception {
+		final var entity = entities.get(0);
+		
+		//GIVEN
+		Map<String, String> request = retrieveByKeyRequest(true, entity);
+		
+		//WHEN
+		String endPoint = getEndPoint() + "/retrieve";
+		log.info("Perform POST for URL: {}", endPoint);
+		var result = mockMvc.perform(post(endPoint).
+	    		contentType(MediaType.APPLICATION_JSON).
+	    		content(mapper.writeValueAsString(request)).
+	    		accept(MediaType.APPLICATION_JSON_VALUE)).
+				andReturn();
+		
+		//THEN
+		var response = result.getResponse();
+		assertEquals(HttpStatus.EXPECTATION_FAILED.value(), response.getStatus());
+		assertEquals("", response.getContentAsString());
+	}
+	
+	@Test
 	void testRetrieveByKeyFailureMissingEntityException() throws Exception {
 		final var entity = entities.get(0);
 		
 		//GIVEN
-		Map<String, String> request = retrieveByKeyRequest(entity);
+		Map<String, String> request = retrieveByKeyRequest(false, entity);
 		
 		//MOCK
 		whenFindEntity(entity).thenReturn(Optional.ofNullable(null));
@@ -353,7 +387,7 @@ public abstract class AbstractCrudControllerTest<T extends AbstractStringPersist
 		final var entity = entities.get(0);
 		
 		//GIVEN
-		Map<String, String> request = retrieveByKeyRequest(entity);
+		Map<String, String> request = retrieveByKeyRequest(false, entity);
 		
 		//MOCK
 		whenFindEntity(entity).thenReturn(Optional.of(entity));
@@ -389,7 +423,7 @@ public abstract class AbstractCrudControllerTest<T extends AbstractStringPersist
 		final var entity = entities.get(0);
 		
 		//GIVEN
-		Map<String, String> request = retrieveByKeyRequest(entity);
+		Map<String, String> request = retrieveByKeyRequest(false, entity);
 		
 		//MOCK
 		whenFindEntity(entity).thenReturn(Optional.ofNullable(null));
@@ -475,6 +509,16 @@ public abstract class AbstractCrudControllerTest<T extends AbstractStringPersist
 		return new StringBuilder(getEndPoint()).append("/").
 				append(number).append("?limit=").append(limit).toString();
 	}
+	
+	protected final Map<String, String> retrieveByKeyRequest(boolean testForNullKey, T entity) {
+		Map<String, String> keys = null;
+		if(testForNullKey) {
+			keys = Collections.emptyMap();
+		} else {
+			keys = retrieveByKeyRequest(entity);
+		}
+		return keys;
+	}
 
 	protected abstract Class<T> getClazz();
 
@@ -488,6 +532,4 @@ public abstract class AbstractCrudControllerTest<T extends AbstractStringPersist
 	
 	protected abstract AbstractCrudController<T> getService();
 
-	protected abstract StringPersistableCrudService<T> getCrudManager();
-	
 }
