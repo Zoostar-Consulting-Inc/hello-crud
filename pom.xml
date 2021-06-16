@@ -28,6 +28,7 @@
 		<module>hello-crud-entity</module>
 		<module>hello-crud-module</module>
 		<module>hello-crud-web</module>
+		<module>hello-crud-jobs</module>
 	</modules>
 	<dependencies>
 		<dependency>
