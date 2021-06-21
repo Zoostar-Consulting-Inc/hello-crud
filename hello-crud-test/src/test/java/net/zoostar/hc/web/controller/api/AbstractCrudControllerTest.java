@@ -259,6 +259,7 @@ public abstract class AbstractCrudControllerTest<T extends AbstractStringPersist
 		assertEquals(entity.getClass(), actualEntity.getClass());
 		assertEquals(entity.hashCode(), actualEntity.hashCode());
 		assertEquals(entity.getId(), actualEntity.getId());
+		assertEquals(entity.toString(), actualEntity.toString());
 		
 		additionalSuccessAssertions(entity, actualEntity);
 	}
