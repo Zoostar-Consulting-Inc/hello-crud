@@ -13,6 +13,7 @@
 	<properties>
 		<build.number>${user.name}</build.number>
 		<maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
+		<sonar.skip>true</sonar.skip>
 	</properties>
 	<build>
 		<finalName>hc</finalName>
