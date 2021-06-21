@@ -22,8 +22,10 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @ActiveProfiles({"dev", "hsql-dev"})
 @ExtendWith(MockitoExtension.class)
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(locations = {"classpath:META-INF/datasource-job.xml", "classpath:META-INF/job-greeting.xml"})
-class GreetTest {
+@ContextConfiguration(locations = {"classpath:META-INF/datasource-job.xml",
+		"classpath:META-INF/datasource-from.xml",
+		"classpath:META-INF/job-product-snapshot.xml"})
+class ProductLoadTest {
 	
 	private SecureRandom random = new SecureRandom();
 	
@@ -34,7 +36,7 @@ class GreetTest {
 	Job job;
 
 	@Test
-	void testExecuteJobOne() throws Exception {
+	void testExecuteJobLoadProduct() throws Exception {
 		// GIVEN
 		JobParameters jobParameters = new JobParametersBuilder().
 				addLong("random", random.nextLong()).
