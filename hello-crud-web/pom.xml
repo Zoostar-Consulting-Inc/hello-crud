@@ -17,11 +17,6 @@
 	<dependencies>
 		<dependency>
 			<groupId>net.zoostar.hc</groupId>
-			<artifactId>hello-crud-entity</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>net.zoostar.hc</groupId>
 			<artifactId>hello-crud-module</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
