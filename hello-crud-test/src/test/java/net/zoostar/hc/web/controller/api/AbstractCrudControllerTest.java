@@ -52,7 +52,7 @@ import net.zoostar.hc.web.filter.GatewayAuditFilterChain;
 import net.zoostar.hc.web.request.RequestEntity;
 
 @WebAppConfiguration
-@ActiveProfiles({"dev", "hsql-dev"})
+@ActiveProfiles({"test", "hsql-test"})
 @ExtendWith(MockitoExtension.class)
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(locations = {"classpath:META-INF/applicationContext-web.xml"})

@@ -17,7 +17,7 @@
 	</bean>
 	<tx:annotation-driven />
 
-	<beans profile="hsql-dev">
+	<beans profile="hsql-test">
 		<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
 			<property name="dataSource" ref="dataSource" />
 			<property name="packagesToScan" value="net.zoostar.hc.model" />

@@ -31,8 +31,8 @@
 		p:suffix=".jsp"
 	/>
 	
-	<beans profile="dev">
-		<context:property-placeholder location="classpath:app.properties, classpath:dev/env.properties" />
+	<beans profile="test">
+		<context:property-placeholder location="classpath:app.properties, classpath:test/env.properties" />
 	</beans>
 	
 </beans>

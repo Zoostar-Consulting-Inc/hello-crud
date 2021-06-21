@@ -23,7 +23,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
 @WebAppConfiguration
-@ActiveProfiles({"dev", "hsql-dev"})
+@ActiveProfiles({"test", "hsql-test"})
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(locations = {
 		"classpath:META-INF/applicationContext-web.xml",
