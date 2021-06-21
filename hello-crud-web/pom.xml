@@ -3,7 +3,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>hello-crud-web</artifactId>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 	<parent>
 		<groupId>net.zoostar.hc</groupId>
 		<artifactId>hello-crud-parent</artifactId>
@@ -11,42 +11,9 @@
 	</parent>
 	<description>A starter project for carrying out PoCs</description>
 	<properties>
-		<build.number>${user.name}</build.number>
-		<maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
-		<sonar.exclusions>**/theme-default/**</sonar.exclusions>
-		<sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+		<sonar.moduleKey>${project.artifactId}</sonar.moduleKey>
+		<sonar.coverage.jacoco.xmlReportPaths>${basedir}/../${aggregate.report.dir}/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
 	</properties>
-	<build>
-		<finalName>hc</finalName>
-		<plugins>
-			<plugin> <!-- maven-war-plugin -->
-				<artifactId>maven-war-plugin</artifactId>
-				<configuration>
-					<warName>${project.build.finalName}</warName>
-					<warSourceDirectory>src/main/webapp</warSourceDirectory>
-					<archive>
-						<manifestEntries>
-							<SVN-Revision>${SVN_REVISION}</SVN-Revision>
-							<Weblogic-Application-Version>${project.version}.${build.number}.${maven.build.timestamp}</Weblogic-Application-Version>
-						</manifestEntries>
-					</archive>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.jacoco</groupId>
-				<artifactId>jacoco-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>report-aggregate</id>
-						<phase>verify</phase>
-						<goals>
-							<goal>report-aggregate</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
 	<dependencies>
 		<dependency>
 			<groupId>net.zoostar.hc</groupId>
@@ -95,16 +62,6 @@
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-config</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.integration</groupId>
-			<artifactId>spring-integration-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-junit-jupiter</artifactId>
-			<scope>test</scope>
 		</dependency>
 	</dependencies>
 </project>
