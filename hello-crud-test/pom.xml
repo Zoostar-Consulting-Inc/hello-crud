@@ -10,7 +10,7 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 	<properties>
-		<sonar.exclusions>**/theme-default/**</sonar.exclusions>
+		<sonar.exclusions>../hello-crud-ui-war/src/main/webapp/resource/theme-default/**</sonar.exclusions>
 		<sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
 	</properties>
 	<dependencies>
