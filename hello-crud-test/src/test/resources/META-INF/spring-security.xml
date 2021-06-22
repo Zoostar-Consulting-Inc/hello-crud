@@ -14,7 +14,7 @@
     </authentication-manager>
 
 
-	<beans:beans profile="dev">
+	<beans:beans profile="test">
 		<http use-expressions="true" auto-config="true" disable-url-rewriting="true">
 			<intercept-url pattern="/login" access="isAnonymous()"/>
 			<intercept-url pattern="/**" access="isAuthenticated()"/>
