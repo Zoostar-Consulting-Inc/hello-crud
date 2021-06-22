@@ -20,7 +20,7 @@ public abstract class AbstractCrudController<T extends AbstractStringPersistable
 	protected final Logger log = LoggerFactory.getLogger(getClass());
 	
 	protected ResponseEntity<T> create(RequestEntity<T> request) {
-		log.info("{}", "Received request to create a new entity...");
+		log.info("Received request to create a new entity: {}...", request);
 		HttpStatus status = HttpStatus.CREATED;
 		T entity = null;
 		try {

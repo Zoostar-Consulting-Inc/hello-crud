@@ -22,12 +22,14 @@
 		<sonar.projectKey>Zoostar-Consulting-Inc_hello-crud</sonar.projectKey>
 		<sonar.organization>zoostar-consulting-inc</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
-		<aggregate.report.dir>hello-crud-web/target/site/jacoco-aggregate</aggregate.report.dir>
+		<aggregate.report.dir>hello-crud-test/target/site/jacoco-aggregate</aggregate.report.dir>
 	</properties>
 	<modules>
 		<module>hello-crud-entity</module>
 		<module>hello-crud-module</module>
 		<module>hello-crud-web</module>
+		<module>hello-crud-ui-war</module>
+		<module>hello-crud-test</module>
 		<module>hello-crud-jobs</module>
 	</modules>
 	<dependencies>
@@ -44,6 +46,10 @@
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-engine</artifactId>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
 		</dependency>
 	</dependencies>
 	<build>

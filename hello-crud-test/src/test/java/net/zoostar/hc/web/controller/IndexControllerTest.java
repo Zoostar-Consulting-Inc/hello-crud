@@ -33,7 +33,7 @@ import net.zoostar.hc.web.filter.GatewayAuditFilterChain;
 
 @Slf4j
 @WebAppConfiguration
-@ActiveProfiles({"dev", "hsql-dev"})
+@ActiveProfiles({"test", "hsql-test"})
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(locations = {"classpath:META-INF/applicationContext-web.xml"})
 class IndexControllerTest {
@@ -65,7 +65,7 @@ class IndexControllerTest {
 		assertNotNull(result);
 		ModelAndView modelAndView = result.getModelAndView();
 		assertEquals("index", modelAndView.getViewName());
-		assertEquals("dev", modelAndView.getModel().get("env"));
+		assertEquals("test", modelAndView.getModel().get("env"));
 		assertEquals("Hello CRUD", modelAndView.getModel().get("message"));
 	}
 

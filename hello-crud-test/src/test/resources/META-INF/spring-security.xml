@@ -1,0 +1,31 @@
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	
+	<http security="none" pattern="/resources/**" />
+	<http security="none" pattern="/webjars/**" />
+	<http security="none" pattern="/api/user/create.json" />
+	
+    <authentication-manager alias="authenticationManager">
+    	<authentication-provider ref="authenticationProvider"/>
+    </authentication-manager>
+
+
+	<beans:beans profile="test">
+		<http use-expressions="true" auto-config="true" disable-url-rewriting="true">
+			<intercept-url pattern="/login" access="isAnonymous()"/>
+			<intercept-url pattern="/**" access="isAuthenticated()"/>
+			
+			<form-login login-page="/login" authentication-failure-url="/login?error=Authentication Failed."/>
+			<logout delete-cookies="JSESSIONID" logout-url="/logout"/>
+			<csrf disabled="true"/>
+			<session-management invalid-session-url="/login?error=Session Timed Out. Please Re-login."/>
+			<access-denied-handler error-page="/accessdenied"/>
+		</http>
+
+		<beans:bean id="authenticationProvider" class="net.zoostar.hc.web.config.DummyAuthenticationProviderImpl"/>
+	</beans:beans>
+</beans:beans>
