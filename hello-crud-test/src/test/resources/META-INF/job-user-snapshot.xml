@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/batch"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch.xsd
+		http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
+		http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<beans:import resource="classpath:META-INF/datasource-from.xml"/>
+	<beans:import resource="classpath:META-INF/datasource-job.xml" />
+	<beans:import resource="classpath:META-INF/datasource.xml" />
+	
+	<job id="user-snapshot">
+		<step id="load">
+			<tasklet>
+				<chunk reader="read-from-db" processor="process-record" writer="write-to-db" commit-interval="1" />
+			</tasklet>
+		</step>
+	</job>
+
+	<beans:bean id="read-from-db" class="org.springframework.batch.item.database.JdbcPagingItemReader">
+		<beans:property name="dataSource" ref="fromDataSource" />
+		<beans:property name="pageSize" value="3" />
+		<beans:property name="queryProvider">
+			<beans:bean class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean">
+	            <beans:property name="selectClause" value="id, email, first_name, last_name"/>
+	            <beans:property name="fromClause" value="user"/>
+	            <beans:property name="sortKey" value="id"/>
+	            <beans:property name="dataSource" ref="fromDataSource" />
+			</beans:bean>
+		</beans:property>
+		<beans:property name="rowMapper" ref="userMapper"/>
+	</beans:bean>
+	
+	<beans:bean id="write-to-db" class="org.springframework.batch.item.database.JpaItemWriter">
+		<beans:property name="entityManagerFactory" ref="entityManagerFactory" />
+	</beans:bean>
+	
+	<beans:bean id="process-record" class="net.zoostar.hc.batch.tasklet.UserRecordProcessor" />
+	<beans:bean id="userMapper" class="net.zoostar.hc.batch.tasklet.UserMapper" />
+
+</beans:beans>

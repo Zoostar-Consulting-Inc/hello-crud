@@ -24,16 +24,16 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import lombok.extern.slf4j.Slf4j;
-import net.zoostar.hc.model.Product;
-import net.zoostar.hc.service.ProductService;
+import net.zoostar.hc.model.User;
+import net.zoostar.hc.service.UserService;
 
 @Slf4j
 @ActiveProfiles({"test", "hsql-test"})
 @ExtendWith(MockitoExtension.class)
 @ExtendWith(SpringExtension.class)
 //@DirtiesContext(classMode = ClassMode.BEFORE_CLASS)
-@ContextConfiguration(locations = {"classpath:META-INF/job-product-snapshot.xml"})
-class ProductLoadTest {
+@ContextConfiguration(locations = {"classpath:META-INF/job-user-snapshot.xml"})
+class UserLoadTest {
 	
 	private SecureRandom random = new SecureRandom();
 	
@@ -44,7 +44,7 @@ class ProductLoadTest {
 	Job job;
 	
 	@Autowired
-	ProductService productManager;
+	UserService userManager;
 	
 	@BeforeEach
 	protected final void beforeEach(TestInfo test) throws Exception {
@@ -53,7 +53,7 @@ class ProductLoadTest {
 	}
 	
 	@Test
-	void testExecuteJobLoadProduct() throws Exception {
+	void testExecuteJobLoadUser() throws Exception {
 		// GIVEN
 		JobParameters jobParameters = new JobParametersBuilder().
 				addLong("random", random.nextLong()).
@@ -67,13 +67,13 @@ class ProductLoadTest {
 		
 		// THEN
 		assertEquals(ExitStatus.COMPLETED, jobExecution.getExitStatus());
-		Page<Product> page = productManager.retrieve(0, 100);
+		Page<User> page = userManager.retrieve(0, 100);
 		assertEquals(11, page.getNumberOfElements());
-		Product product = productManager.retrieveBySku("SKU1");
-		assertTrue(product.getId().length() > 0);
-		assertEquals("One", product.getName());
-		assertEquals("Description One", product.getDesc());
-		assertEquals("MDM", product.getSource());
+		User user = userManager.retrieveByEmail("EMAIL1");
+		assertTrue(user.getId().length() > 0);
+		assertEquals("One", user.getFirstName());
+		assertEquals("Last One", user.getLastName());
+		assertEquals("MDM", user.getSource());
 	}
 
 }

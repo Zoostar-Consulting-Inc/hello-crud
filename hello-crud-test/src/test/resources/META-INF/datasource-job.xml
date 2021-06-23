@@ -6,6 +6,7 @@
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
 	<jdbc:embedded-database id="jobDataSource" type="HSQL" generate-name="true">
+		<jdbc:script location="classpath:/org/springframework/batch/core/schema-drop-hsqldb.sql"/>
 		<jdbc:script location="classpath:/org/springframework/batch/core/schema-hsqldb.sql"/>
 	</jdbc:embedded-database>
 

@@ -9,3 +9,15 @@ INSERT INTO Product (sku, name, description) VALUES ('SKU8', 'Eight', 'Descripti
 INSERT INTO Product (sku, name, description) VALUES ('SKU9', 'Nine', 'Description Nine');
 INSERT INTO Product (sku, name, description) VALUES ('SKU10', 'Ten', 'Description Ten');
 INSERT INTO Product (sku, name, description) VALUES ('SKU11', 'Eleven', 'Description Eleven');
+
+INSERT INTO User (email, first_name, last_name) VALUES ('EMAIL1', 'One', 'Last One');
+INSERT INTO User (email, first_name, last_name) VALUES ('EMAIL2', 'Two', 'Last Two');
+INSERT INTO User (email, first_name, last_name) VALUES ('EMAIL3', 'Three', 'Last Three');
+INSERT INTO User (email, first_name, last_name) VALUES ('EMAIL4', 'Four', 'Last Four');
+INSERT INTO User (email, first_name, last_name) VALUES ('EMAIL5', 'Five', 'Last Five');
+INSERT INTO User (email, first_name, last_name) VALUES ('EMAIL6', 'Six', 'Last Six');
+INSERT INTO User (email, first_name, last_name) VALUES ('EMAIL7', 'Seven', 'Last Seven');
+INSERT INTO User (email, first_name, last_name) VALUES ('EMAIL8', 'Eight', 'Last Eight');
+INSERT INTO User (email, first_name, last_name) VALUES ('EMAIL9', 'Nine', 'Last Nine');
+INSERT INTO User (email, first_name, last_name) VALUES ('EMAIL10', 'Ten', 'Last Ten');
+INSERT INTO User (email, first_name, last_name) VALUES ('EMAIL11', 'Eleven', 'Last Eleven');
