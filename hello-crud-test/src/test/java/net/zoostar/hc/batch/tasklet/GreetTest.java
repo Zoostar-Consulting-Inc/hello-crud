@@ -19,7 +19,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-@ActiveProfiles({"dev", "hsql-dev"})
+@ActiveProfiles({"test", "hsql-test"})
 @ExtendWith(MockitoExtension.class)
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(locations = {"classpath:META-INF/datasource-job.xml", "classpath:META-INF/job-greeting.xml"})

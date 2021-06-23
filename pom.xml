@@ -29,8 +29,8 @@
 		<module>hello-crud-module</module>
 		<module>hello-crud-web</module>
 		<module>hello-crud-ui-war</module>
-		<module>hello-crud-test</module>
 		<module>hello-crud-jobs</module>
+		<module>hello-crud-test</module>
 	</modules>
 	<dependencies>
 		<dependency>

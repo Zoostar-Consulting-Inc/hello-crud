@@ -11,13 +11,16 @@ import net.zoostar.hc.model.Product;
 @Slf4j
 public class ProductMapper implements RowMapper<Product> {
 
+	private static final String SOURCE = "MDM";
+	
 	@Override
 	public Product mapRow(ResultSet rs, int rowNum) throws SQLException {
 		log.debug("Mapping item for row number: {}", rowNum);
 		Product product = new Product();
-		product.setDesc(rs.getString("desc"));
+		product.setDesc(rs.getString("description"));
 		product.setName(rs.getString("name"));
 		product.setSku(rs.getString("sku"));
+		product.setSource(SOURCE);
 		return product;
 	}
 
