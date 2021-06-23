@@ -67,7 +67,7 @@ implements StringPersistableCrudService<T>, InitializingBean {
 		getRepository().deleteById(id);
 	}
 
-	private final String preCreateFilter(final T persistable) throws ValidatorException {
+	protected final String preCreateFilter(final T persistable) throws ValidatorException {
 		String loggable = preNullValidation(persistable);
 		log.info("Proceeding with validations for entity: {}...", loggable);
 		preCreateValidation(persistable);

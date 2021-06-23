@@ -1,0 +1,11 @@
+INSERT INTO Product (sku, name, description) VALUES ('SKU1', 'One', 'Description One');
+INSERT INTO Product (sku, name, description) VALUES ('SKU2', 'Two', 'Description Two');
+INSERT INTO Product (sku, name, description) VALUES ('SKU3', 'Three', 'Description Three');
+INSERT INTO Product (sku, name, description) VALUES ('SKU4', 'Four', 'Description Four');
+INSERT INTO Product (sku, name, description) VALUES ('SKU5', 'Five', 'Description Five');
+INSERT INTO Product (sku, name, description) VALUES ('SKU6', 'Six', 'Description Six');
+INSERT INTO Product (sku, name, description) VALUES ('SKU7', 'Seven', 'Description Seven');
+INSERT INTO Product (sku, name, description) VALUES ('SKU8', 'Eight', 'Description Eight');
+INSERT INTO Product (sku, name, description) VALUES ('SKU9', 'Nine', 'Description Nine');
+INSERT INTO Product (sku, name, description) VALUES ('SKU10', 'Ten', 'Description Ten');
+INSERT INTO Product (sku, name, description) VALUES ('SKU11', 'Eleven', 'Description Eleven');

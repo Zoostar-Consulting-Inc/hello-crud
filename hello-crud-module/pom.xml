@@ -14,9 +14,9 @@
 	</properties>
 	<dependencies>
 		<dependency>
-			<groupId>net.zoostar.hc</groupId>
+			<groupId>${project.parent.groupId}</groupId>
+			<version>${project.parent.version}</version>
 			<artifactId>hello-crud-entity</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 </project>
