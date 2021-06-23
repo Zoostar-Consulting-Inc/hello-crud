@@ -46,10 +46,7 @@ public abstract class AbstractStringPersistable implements Persistable<String>, 
 		if (this == obj) {
 			return true;
 		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
+		if (!(obj instanceof AbstractStringPersistable)) {
 			return false;
 		}
 		AbstractStringPersistable other = (AbstractStringPersistable) obj;
