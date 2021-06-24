@@ -42,6 +42,6 @@
 	</beans:bean>
 	
 	<beans:bean id="process-record" class="net.zoostar.hc.batch.tasklet.UserRecordProcessor" />
-	<beans:bean id="userMapper" class="net.zoostar.hc.batch.tasklet.UserMapper" />
+	<beans:bean id="userMapper" class="net.zoostar.hc.batch.tasklet.UserMapper" scope="step" />
 
 </beans:beans>

@@ -35,6 +35,8 @@ import net.zoostar.hc.service.UserService;
 @ContextConfiguration(locations = {"classpath:META-INF/job-user-snapshot.xml"})
 class UserLoadTest {
 	
+	private static final String SOURCE = "MDM";
+	
 	private SecureRandom random = new SecureRandom();
 	
 	@Autowired
@@ -57,6 +59,7 @@ class UserLoadTest {
 		// GIVEN
 		JobParameters jobParameters = new JobParametersBuilder().
 				addLong("random", random.nextLong()).
+				addString("source", SOURCE).
 				toJobParameters();
 		
 		// WHEN
