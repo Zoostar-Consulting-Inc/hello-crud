@@ -1,10 +1,11 @@
 package net.zoostar.hc.web.request;
 
 import lombok.ToString;
+import net.zoostar.hc.model.EntityWrapper;
 import net.zoostar.hc.model.User;
 
 @ToString
-public class RequestUser implements RequestEntity<User> {
+public class RequestUser implements EntityWrapper<User> {
 	
 	private User user;
 	

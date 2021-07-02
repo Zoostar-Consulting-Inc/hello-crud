@@ -10,16 +10,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import net.zoostar.hc.model.AbstractStringPersistable;
+import net.zoostar.hc.model.EntityWrapper;
 import net.zoostar.hc.service.StringPersistableCrudService;
 import net.zoostar.hc.service.impl.MissingEntityException;
 import net.zoostar.hc.validate.ValidatorException;
-import net.zoostar.hc.web.request.RequestEntity;
 
 public abstract class AbstractCrudController<T extends AbstractStringPersistable> {
 
 	protected final Logger log = LoggerFactory.getLogger(getClass());
 	
-	protected ResponseEntity<T> create(RequestEntity<T> request) {
+	protected ResponseEntity<T> create(EntityWrapper<T> request) {
 		log.info("Received request to create a new entity: {}...", request);
 		HttpStatus status = HttpStatus.CREATED;
 		T entity = null;
@@ -47,7 +47,7 @@ public abstract class AbstractCrudController<T extends AbstractStringPersistable
 		return new ResponseEntity<>(entities, status);
 	}
 
-	protected ResponseEntity<T> update(RequestEntity<T> request) {
+	protected ResponseEntity<T> update(EntityWrapper<T> request) {
 		log.info("{}", "Received request to update an entity...");
 		HttpStatus status = HttpStatus.OK;
 		T entity = null;

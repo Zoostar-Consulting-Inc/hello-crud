@@ -24,6 +24,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import lombok.extern.slf4j.Slf4j;
+import net.zoostar.hc.model.MdmUser;
 import net.zoostar.hc.model.User;
 import net.zoostar.hc.service.UserService;
 
@@ -33,7 +34,7 @@ import net.zoostar.hc.service.UserService;
 @ExtendWith(SpringExtension.class)
 //@DirtiesContext(classMode = ClassMode.BEFORE_CLASS)
 @ContextConfiguration(locations = {"classpath:META-INF/job-user-snapshot.xml"})
-class UserLoadTest {
+class LoadUserTest {
 	
 	private static final String SOURCE = "MDM";
 	
@@ -60,6 +61,11 @@ class UserLoadTest {
 		JobParameters jobParameters = new JobParametersBuilder().
 				addLong("random", random.nextLong()).
 				addString("source", SOURCE).
+				addLong("readerPageSize", 3L).
+				addString("readerSelectClause", "id AS ID, email AS EMAIL, fname AS FIRST_NAME, lname AS LAST_NAME").
+				addString("readerFromClause", "user").
+				addString("readerSortKey", "id").
+				addString("mappedClass", MdmUser.class.getName()).
 				toJobParameters();
 		
 		// WHEN
@@ -76,7 +82,7 @@ class UserLoadTest {
 		assertTrue(user.getId().length() > 0);
 		assertEquals("One", user.getFirstName());
 		assertEquals("Last One", user.getLastName());
-		assertEquals("MDM", user.getSource());
+		assertEquals(SOURCE, user.getSource());
 	}
 
 }

@@ -20,9 +20,9 @@ import org.springframework.http.MediaType;
 
 import lombok.Getter;
 import net.zoostar.hc.dao.UserRepository;
+import net.zoostar.hc.model.EntityWrapper;
 import net.zoostar.hc.model.User;
 import net.zoostar.hc.service.impl.UserServiceImpl;
-import net.zoostar.hc.web.request.RequestEntity;
 import net.zoostar.hc.web.request.RequestUser;
 
 class UserRestControllerTest extends AbstractCrudControllerTest<User> {
@@ -117,7 +117,7 @@ class UserRestControllerTest extends AbstractCrudControllerTest<User> {
 	}
 
 	@Override
-	protected RequestEntity<User> requestUpdatedEntity(User existingEntity) {
+	protected EntityWrapper<User> requestUpdatedEntity(User existingEntity) {
 		RequestUser request = new RequestUser();
 		request.setEmail(existingEntity.getEmail());
 		request.setFirstName(existingEntity.getFirstName() + " Updated");

@@ -24,6 +24,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import lombok.extern.slf4j.Slf4j;
+import net.zoostar.hc.model.MdmProduct;
 import net.zoostar.hc.model.Product;
 import net.zoostar.hc.service.ProductService;
 
@@ -33,7 +34,7 @@ import net.zoostar.hc.service.ProductService;
 @ExtendWith(SpringExtension.class)
 //@DirtiesContext(classMode = ClassMode.BEFORE_CLASS)
 @ContextConfiguration(locations = {"classpath:META-INF/job-product-snapshot.xml"})
-class ProductLoadTest {
+class LoadProductTest {
 	
 	private static final String SOURCE = "MDM";
 	
@@ -60,6 +61,11 @@ class ProductLoadTest {
 		JobParameters jobParameters = new JobParametersBuilder().
 				addLong("random", random.nextLong()).
 				addString("source", SOURCE).
+				addLong("readerPageSize", 3L).
+				addString("readerSelectClause", "id AS ID, psku AS PROD_SKU, name AS PROD_NAME, description as PROD_DESC").
+				addString("readerFromClause", "product").
+				addString("readerSortKey", "ID").
+				addString("mappedClass", MdmProduct.class.getName()).
 				toJobParameters();
 		
 		// WHEN
