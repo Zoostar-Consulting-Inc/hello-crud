@@ -13,6 +13,4 @@
 
 	<beans:import resource="classpath:META-INF/job-parent-snapshot.xml" />
 
-	<beans:bean id="processor" class="net.zoostar.hc.batch.tasklet.ProductRecordProcessor" />
-
 </beans:beans>

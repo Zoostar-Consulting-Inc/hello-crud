@@ -27,6 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.zoostar.hc.model.MdmUser;
 import net.zoostar.hc.model.User;
 import net.zoostar.hc.service.UserService;
+import net.zoostar.hc.service.impl.UserServiceImpl;
 
 @Slf4j
 @ActiveProfiles({"test", "hsql-test"})
@@ -66,6 +67,7 @@ class LoadUserTest {
 				addString("readerFromClause", "user").
 				addString("readerSortKey", "id").
 				addString("mappedClass", MdmUser.class.getName()).
+				addString("mappedServiceClassName", UserServiceImpl.class.getName()).
 				toJobParameters();
 		
 		// WHEN

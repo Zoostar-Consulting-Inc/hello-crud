@@ -10,6 +10,9 @@
 		http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
 		http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+	
+	<context:annotation-config />
+	<context:component-scan base-package="net.zoostar.hc.service" />
 
 	<beans:import resource="classpath:META-INF/datasource-from.xml"/>
 	<beans:import resource="classpath:META-INF/datasource-job.xml" />
@@ -45,4 +48,7 @@
 		<beans:property name="mappedClass" value="#{jobParameters['mappedClass']}" />
 		<beans:property name="source" value="#{jobParameters['source']}" />
 	</beans:bean>
+	
+	<beans:bean id="processor" class="net.zoostar.hc.batch.tasklet.GenericRecordProcessor" />
+	
 </beans:beans>
