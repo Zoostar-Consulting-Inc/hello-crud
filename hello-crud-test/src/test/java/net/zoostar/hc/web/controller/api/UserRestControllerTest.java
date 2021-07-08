@@ -3,6 +3,7 @@ package net.zoostar.hc.web.controller.api;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 import java.util.HashMap;
@@ -20,9 +21,9 @@ import org.springframework.http.MediaType;
 
 import lombok.Getter;
 import net.zoostar.hc.dao.UserRepository;
+import net.zoostar.hc.model.EntityWrapper;
 import net.zoostar.hc.model.User;
 import net.zoostar.hc.service.impl.UserServiceImpl;
-import net.zoostar.hc.web.request.RequestEntity;
 import net.zoostar.hc.web.request.RequestUser;
 
 class UserRestControllerTest extends AbstractCrudControllerTest<User> {
@@ -88,6 +89,20 @@ class UserRestControllerTest extends AbstractCrudControllerTest<User> {
 		assertEquals(HttpStatus.EXPECTATION_FAILED.value(), response.getStatus());
 	}
 
+	@Test
+	void testSnapshot() throws Exception {
+		//GIVEN
+
+		//WHEN
+		log.info("Perform GET for URL: {}", getEndPoint());
+		var result = mockMvc.perform(get(getEndPoint() + "/snapshot")).
+				andReturn();
+		
+		//THEN
+		var response = result.getResponse();
+		assertEquals(HttpStatus.OK.value(), response.getStatus());
+	}
+
 	@Override
 	protected void additionalSuccessAssertions(User expectedEntity, User actualEntity) {
 		assertFalse(StringUtils.isBlank(actualEntity.getEmail()));
@@ -117,7 +132,7 @@ class UserRestControllerTest extends AbstractCrudControllerTest<User> {
 	}
 
 	@Override
-	protected RequestEntity<User> requestUpdatedEntity(User existingEntity) {
+	protected EntityWrapper<User> requestUpdatedEntity(User existingEntity) {
 		RequestUser request = new RequestUser();
 		request.setEmail(existingEntity.getEmail());
 		request.setFirstName(existingEntity.getFirstName() + " Updated");

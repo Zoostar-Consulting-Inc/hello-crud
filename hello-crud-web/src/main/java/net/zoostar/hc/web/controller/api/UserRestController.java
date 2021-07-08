@@ -1,9 +1,21 @@
 package net.zoostar.hc.web.controller.api;
 
+import java.security.SecureRandom;
 import java.util.Map;
 
+import org.springframework.batch.core.BatchStatus;
+import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobExecution;
+import org.springframework.batch.core.JobParameters;
+import org.springframework.batch.core.JobParametersBuilder;
+import org.springframework.batch.core.launch.support.SimpleJobLauncher;
+import org.springframework.batch.core.repository.JobRepository;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,23 +29,33 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.Getter;
+import lombok.Setter;
+import net.zoostar.hc.model.MdmUser;
 import net.zoostar.hc.model.User;
 import net.zoostar.hc.service.UserService;
 import net.zoostar.hc.service.impl.MissingEntityException;
+import net.zoostar.hc.service.impl.UserServiceImpl;
 import net.zoostar.hc.web.request.RequestUser;
 
 @Getter
 @RestController
 @RequestMapping(path = "/api/user")
-public class UserRestController extends AbstractCrudController<User> {
+public class UserRestController extends AbstractCrudController<User> implements ApplicationContextAware {
 	
-	protected UserService crudManager;
+	protected ApplicationContext applicationContext;
 	
 	@Autowired
-	public void setCrudManager(UserService crudManager) {
-		this.crudManager = crudManager;
-	}
-
+	protected JobRepository jobRepository;
+    
+    private SecureRandom random = new SecureRandom();
+    
+//	@Autowired
+//	Job job;
+	
+	@Setter
+	@Autowired
+	protected UserService crudManager;
+	
 	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<User> create(@RequestBody RequestUser request) {
 		return super.create(request);
@@ -62,9 +84,38 @@ public class UserRestController extends AbstractCrudController<User> {
 		return super.retrieveByKey(request);
 	}
 
+    @GetMapping("/snapshot")
+    public ResponseEntity<BatchStatus> snapshot() throws Exception {
+    	SimpleJobLauncher launcher = new SimpleJobLauncher();
+		launcher.setJobRepository(jobRepository);
+		launcher.afterPropertiesSet();
+		log.info("Job launcher initialized: {}.", launcher);
+
+		Job userJob = applicationContext.getBean("job-user-snapshot", Job.class);
+    	log.info("Launching job: {}...", userJob.toString());
+		JobParameters jobParameters = new JobParametersBuilder().
+				addLong("random", random.nextLong()).
+				addString("source", "MDM").
+				addLong("readerPageSize", 3L).
+				addString("readerSelectClause", "id AS ID, email AS EMAIL, fname AS FIRST_NAME, lname AS LAST_NAME").
+				addString("readerFromClause", "user").
+				addString("readerSortKey", "id").
+				addString("mappedClass", MdmUser.class.getName()).
+				addString("mappedServiceClassName", UserServiceImpl.class.getName()).
+				toJobParameters();
+		JobExecution execution = launcher.run(userJob, jobParameters);
+		log.info("Job Execution Status: {}", execution);
+		return new ResponseEntity<>(execution.getStatus(), HttpStatus.OK);
+    }
+
 	@Override
 	protected User retrieveEntity(Map<String, String> request) throws MissingEntityException {
 		return getCrudManager().retrieveByEmail(request.get("email"));
 	}
-	
+
+	@Override
+	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+		this.applicationContext = applicationContext;
+	}
+
 }

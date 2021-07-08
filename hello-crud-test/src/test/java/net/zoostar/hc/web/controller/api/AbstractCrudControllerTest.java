@@ -47,15 +47,16 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import net.zoostar.hc.model.AbstractStringPersistable;
+import net.zoostar.hc.model.EntityWrapper;
 import net.zoostar.hc.service.StringPersistableCrudService;
 import net.zoostar.hc.web.filter.GatewayAuditFilterChain;
-import net.zoostar.hc.web.request.RequestEntity;
 
 @WebAppConfiguration
 @ActiveProfiles({"test", "hsql-test"})
 @ExtendWith(MockitoExtension.class)
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(locations = {"classpath:META-INF/applicationContext-web.xml"})
+@ContextConfiguration(locations = {"classpath:META-INF/applicationContext-web.xml",
+		"classpath:META-INF/job-user-snapshot.xml"})
 public abstract class AbstractCrudControllerTest<T extends AbstractStringPersistable> {
 
 	protected final Logger log = LoggerFactory.getLogger(getClass());
@@ -445,7 +446,7 @@ public abstract class AbstractCrudControllerTest<T extends AbstractStringPersist
 
 	protected abstract OngoingStubbing<Optional<T>> whenFindEntity(T entity);
 
-	protected abstract RequestEntity<T> requestUpdatedEntity(T existingEntity);
+	protected abstract EntityWrapper<T> requestUpdatedEntity(T existingEntity);
 
 	protected abstract void additionalSuccessAssertions(T existingEntity, T actualEntity);
 	
@@ -525,7 +526,7 @@ public abstract class AbstractCrudControllerTest<T extends AbstractStringPersist
 
 	protected abstract String getEndPoint();
 
-	protected abstract RequestEntity<T> requestEntity(T entity);
+	protected abstract EntityWrapper<T> requestEntity(T entity);
 
 	protected abstract String path();
 	
