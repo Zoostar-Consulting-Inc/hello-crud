@@ -34,6 +34,8 @@ import net.zoostar.hc.service.ProductService;
 @ContextConfiguration(locations = {"classpath:META-INF/job-product-snapshot.xml"})
 class ProductLoadTest {
 	
+	private static final String SOURCE = "MDM";
+	
 	private SecureRandom random = new SecureRandom();
 	
 	@Autowired
@@ -56,6 +58,7 @@ class ProductLoadTest {
 		// GIVEN
 		JobParameters jobParameters = new JobParametersBuilder().
 				addLong("random", random.nextLong()).
+				addString("source", SOURCE).
 				toJobParameters();
 		
 		// WHEN
@@ -72,7 +75,7 @@ class ProductLoadTest {
 		assertTrue(product.getId().length() > 0);
 		assertEquals("One", product.getName());
 		assertEquals("Description One", product.getDesc());
-		assertEquals("MDM", product.getSource());
+		assertEquals(SOURCE, product.getSource());
 	}
 
 }
