@@ -150,4 +150,25 @@
 			</snapshots>
 		</repository>
 	</repositories>
+	<organization>
+		<name>Zoostar Consulting, Inc.</name>
+		<url>https://sonarcloud.io/dashboard?id=Zoostar-Consulting-Inc_hello-crud</url>
+	</organization>
+	<scm>
+		<url>https://github.com/Zoostar-Consulting-Inc/hello-crud</url>
+		<developerConnection>devops@zoostar.net</developerConnection>
+		<tag>master</tag>
+		<connection>https://github.com/Zoostar-Consulting-Inc/hello-crud</connection>
+	</scm>
+	<issueManagement>
+		<system>JIRA</system>
+		<url>https://zoostar.atlassian.net/jira/software/projects/HC/boards/8</url>
+	</issueManagement>
+	<name>Hello CRUD</name>
+	<inceptionYear>2021</inceptionYear>
+	<description>Open source CRUD Project based on Java and Spring. Also includes Spring Batch for Bulk Loading of Entities from multiple sources.</description>
+	<ciManagement>
+		<system>GitHub Actions</system>
+		<url>https://github.com/Zoostar-Consulting-Inc/hello-crud/actions</url>
+	</ciManagement>
 </project>

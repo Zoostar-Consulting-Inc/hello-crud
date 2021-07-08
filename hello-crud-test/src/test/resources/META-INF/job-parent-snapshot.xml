@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/batch"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch.xsd
+		http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
+		http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+	
+	<context:annotation-config />
+	<context:component-scan base-package="net.zoostar.hc.service" />
+
+	<beans:import resource="classpath:META-INF/datasource-from.xml"/>
+	<beans:import resource="classpath:META-INF/datasource-job.xml" />
+	<beans:import resource="classpath:META-INF/datasource.xml" />
+	
+	<job id="job-snapshot">
+		<step id="db-to-db-loader">
+			<tasklet>
+				<chunk reader="dbReader" processor="processor" writer="dbWriter" commit-interval="1" />
+			</tasklet>
+		</step>
+	</job>
+
+	<beans:bean id="dbReader" class="org.springframework.batch.item.database.JdbcPagingItemReader" scope="step">
+		<beans:property name="dataSource" ref="fromDataSource" />
+		<beans:property name="pageSize" value="#{jobParameters['readerPageSize']}" />
+		<beans:property name="queryProvider">
+			<beans:bean class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean">
+	            <beans:property name="selectClause" value="#{jobParameters['readerSelectClause']}"/>
+	            <beans:property name="fromClause" value="#{jobParameters['readerFromClause']}"/>
+	            <beans:property name="sortKey" value="#{jobParameters['readerSortKey']}"/>
+	            <beans:property name="dataSource" ref="fromDataSource" />
+			</beans:bean>
+		</beans:property>
+		<beans:property name="rowMapper" ref="rowMapper"/>
+	</beans:bean>
+	
+	<beans:bean id="dbWriter" class="org.springframework.batch.item.database.JpaItemWriter">
+		<beans:property name="entityManagerFactory" ref="entityManagerFactory" />
+	</beans:bean>
+
+	<beans:bean id="rowMapper" class="net.zoostar.hc.batch.tasklet.MultiSourceDataClassRowMapper" scope="step">
+		<beans:property name="mappedClass" value="#{jobParameters['mappedClass']}" />
+		<beans:property name="source" value="#{jobParameters['source']}" />
+	</beans:bean>
+	
+	<beans:bean id="processor" class="net.zoostar.hc.batch.tasklet.GenericRecordProcessor" />
+	
+</beans:beans>

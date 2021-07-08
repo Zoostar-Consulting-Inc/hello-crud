@@ -20,9 +20,9 @@ import org.springframework.http.MediaType;
 
 import lombok.Getter;
 import net.zoostar.hc.dao.ProductRepository;
+import net.zoostar.hc.model.EntityWrapper;
 import net.zoostar.hc.model.Product;
 import net.zoostar.hc.service.impl.ProductServiceImpl;
-import net.zoostar.hc.web.request.RequestEntity;
 import net.zoostar.hc.web.request.RequestProduct;
 
 class ProductRestControllerTest extends AbstractCrudControllerTest<Product> {
@@ -118,7 +118,7 @@ class ProductRestControllerTest extends AbstractCrudControllerTest<Product> {
 	}
 
 	@Override
-	protected RequestEntity<Product> requestUpdatedEntity(Product existingEntity) {
+	protected EntityWrapper<Product> requestUpdatedEntity(Product existingEntity) {
 		RequestProduct request = new RequestProduct(existingEntity);
 		request.setDesc(existingEntity.getDesc() + " Updated");
 		return request;

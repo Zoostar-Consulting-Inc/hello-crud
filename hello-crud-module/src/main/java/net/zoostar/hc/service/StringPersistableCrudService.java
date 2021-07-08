@@ -17,4 +17,6 @@ public interface StringPersistableCrudService<T extends AbstractStringPersistabl
 	T update(T entity) throws ValidatorException;
 
 	void delete(String id);
+
+	String preCreateFilter(T entity) throws ValidatorException;
 }

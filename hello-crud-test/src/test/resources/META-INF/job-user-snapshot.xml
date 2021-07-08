@@ -12,5 +12,5 @@
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
 	<beans:import resource="classpath:META-INF/job-parent-snapshot.xml" />
-
+	
 </beans:beans>
