@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans:beans xmlns="http://www.springframework.org/schema/batch"
+<beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:batch="http://www.springframework.org/schema/batch"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:jpa="http://www.springframework.org/schema/data/jpa"
 	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
@@ -11,6 +11,14 @@
 		http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-	<beans:import resource="classpath:META-INF/job-parent-snapshot.xml" />
+	<import resource="classpath:META-INF/job-parent-snapshot.xml" />
+	
+	<batch:job id="bulk-insert-products">
+		<batch:step id="db-to-db-loader">
+			<batch:tasklet>
+				<batch:chunk reader="dbReader" processor="recordProcessor" writer="dbWriter" commit-interval="1" />
+			</batch:tasklet>
+		</batch:step>
+	</batch:job>
 
-</beans:beans>
+</beans>

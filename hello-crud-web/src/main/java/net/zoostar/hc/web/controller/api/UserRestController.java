@@ -30,11 +30,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.Getter;
 import lombok.Setter;
-import net.zoostar.hc.model.MdmUser;
 import net.zoostar.hc.model.User;
 import net.zoostar.hc.service.UserService;
 import net.zoostar.hc.service.impl.MissingEntityException;
-import net.zoostar.hc.service.impl.UserServiceImpl;
+import net.zoostar.hc.web.request.RequestBulkInsert;
 import net.zoostar.hc.web.request.RequestUser;
 
 @Getter
@@ -84,24 +83,23 @@ public class UserRestController extends AbstractCrudController<User> implements 
 		return super.retrieveByKey(request);
 	}
 
-    @GetMapping("/snapshot")
-    public ResponseEntity<BatchStatus> snapshot() throws Exception {
+    @PostMapping("/bulk/insert")
+    public ResponseEntity<BatchStatus> bulkInsert(@RequestBody RequestBulkInsert<User> request) throws Exception {
+    	log.info("Bulk insert using request: {}", request.toString());
     	SimpleJobLauncher launcher = new SimpleJobLauncher();
 		launcher.setJobRepository(jobRepository);
 		launcher.afterPropertiesSet();
 		log.info("Job launcher initialized: {}.", launcher);
 
-		Job userJob = applicationContext.getBean("job-user-snapshot", Job.class);
+		Job userJob = applicationContext.getBean("bulk-insert-users", Job.class);
     	log.info("Launching job: {}...", userJob.toString());
 		JobParameters jobParameters = new JobParametersBuilder().
-				addLong("random", random.nextLong()).
-				addString("source", "MDM").
-				addLong("readerPageSize", 3L).
-				addString("readerSelectClause", "id AS ID, email AS EMAIL, fname AS FIRST_NAME, lname AS LAST_NAME").
-				addString("readerFromClause", "user").
-				addString("readerSortKey", "id").
-				addString("mappedClass", MdmUser.class.getName()).
-				addString("mappedServiceClassName", UserServiceImpl.class.getName()).
+				addString("source", request.getSource()).
+				addLong("readerPageSize", request.getReaderPageSize()).
+				addString("readerSelectClause", request.getReaderSelectClause()).
+				addString("readerFromClause", request.getReaderFromClause()).
+				addString("readerSortKey", request.getReaderSortKey()).
+				addString("mappedClass", request.getMappedClass()).
 				toJobParameters();
 		JobExecution execution = launcher.run(userJob, jobParameters);
 		log.info("Job Execution Status: {}", execution);
