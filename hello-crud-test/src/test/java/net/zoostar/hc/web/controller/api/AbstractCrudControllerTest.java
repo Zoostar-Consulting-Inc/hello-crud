@@ -55,7 +55,8 @@ import net.zoostar.hc.web.filter.GatewayAuditFilterChain;
 @ActiveProfiles({"test", "hsql-test"})
 @ExtendWith(MockitoExtension.class)
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(locations = {"classpath:META-INF/applicationContext-web.xml"})
+@ContextConfiguration(locations = {"classpath:META-INF/applicationContext-web.xml",
+		"classpath:META-INF/job-user-snapshot.xml"})
 public abstract class AbstractCrudControllerTest<T extends AbstractStringPersistable> {
 
 	protected final Logger log = LoggerFactory.getLogger(getClass());

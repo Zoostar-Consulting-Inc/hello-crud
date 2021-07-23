@@ -1,0 +1,23 @@
+INSERT INTO Product (psku, name, description) VALUES ('SKU1', 'One', 'Description One');
+INSERT INTO Product (psku, name, description) VALUES ('SKU2', 'Two', 'Description Two');
+INSERT INTO Product (psku, name, description) VALUES ('SKU3', 'Three', 'Description Three');
+INSERT INTO Product (psku, name, description) VALUES ('SKU4', 'Four', 'Description Four');
+INSERT INTO Product (psku, name, description) VALUES ('SKU5', 'Five', 'Description Five');
+INSERT INTO Product (psku, name, description) VALUES ('SKU6', 'Six', 'Description Six');
+INSERT INTO Product (psku, name, description) VALUES ('SKU7', 'Seven', 'Description Seven');
+INSERT INTO Product (psku, name, description) VALUES ('SKU8', 'Eight', 'Description Eight');
+INSERT INTO Product (psku, name, description) VALUES ('SKU9', 'Nine', 'Description Nine');
+INSERT INTO Product (psku, name, description) VALUES ('SKU10', 'Ten', 'Description Ten');
+INSERT INTO Product (psku, name, description) VALUES ('SKU11', 'Eleven', 'Description Eleven');
+
+INSERT INTO User (email, fname, lname) VALUES ('EMAIL1', 'One', 'Last One');
+INSERT INTO User (email, fname, lname) VALUES ('EMAIL2', 'Two', 'Last Two');
+INSERT INTO User (email, fname, lname) VALUES ('EMAIL3', 'Three', 'Last Three');
+INSERT INTO User (email, fname, lname) VALUES ('EMAIL4', 'Four', 'Last Four');
+INSERT INTO User (email, fname, lname) VALUES ('EMAIL5', 'Five', 'Last Five');
+INSERT INTO User (email, fname, lname) VALUES ('EMAIL6', 'Six', 'Last Six');
+INSERT INTO User (email, fname, lname) VALUES ('EMAIL7', 'Seven', 'Last Seven');
+INSERT INTO User (email, fname, lname) VALUES ('EMAIL8', 'Eight', 'Last Eight');
+INSERT INTO User (email, fname, lname) VALUES ('EMAIL9', 'Nine', 'Last Nine');
+INSERT INTO User (email, fname, lname) VALUES ('EMAIL10', 'Ten', 'Last Ten');
+INSERT INTO User (email, fname, lname) VALUES ('EMAIL11', 'Eleven', 'Last Eleven');

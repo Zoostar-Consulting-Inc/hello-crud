@@ -18,7 +18,7 @@
 		<dependency>
 			<groupId>${project.parent.groupId}</groupId>
 			<version>${project.parent.version}</version>
-			<artifactId>hello-crud-module</artifactId>
+			<artifactId>hello-crud-jobs</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>io.springfox</groupId>

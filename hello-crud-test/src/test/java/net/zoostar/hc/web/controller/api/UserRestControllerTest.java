@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.batch.runtime.BatchStatus;
+
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -21,8 +23,10 @@ import org.springframework.http.MediaType;
 import lombok.Getter;
 import net.zoostar.hc.dao.UserRepository;
 import net.zoostar.hc.model.EntityWrapper;
+import net.zoostar.hc.model.MdmUser;
 import net.zoostar.hc.model.User;
 import net.zoostar.hc.service.impl.UserServiceImpl;
+import net.zoostar.hc.web.request.RequestBulkInsert;
 import net.zoostar.hc.web.request.RequestUser;
 
 class UserRestControllerTest extends AbstractCrudControllerTest<User> {
@@ -86,6 +90,36 @@ class UserRestControllerTest extends AbstractCrudControllerTest<User> {
 		//THEN
 		var response = result.getResponse();
 		assertEquals(HttpStatus.EXPECTATION_FAILED.value(), response.getStatus());
+	}
+
+	@Test
+	void testBulkInsert() throws Exception {
+		//GIVEN
+		var request = new RequestBulkInsert();
+		request.setMappedClass(MdmUser.class.getName());
+		request.setReaderSelectClause("id AS ID, email AS EMAIL, fname AS FIRST_NAME, lname AS LAST_NAME");
+		request.setReaderFromClause("user");
+		request.setReaderPageSize(3L);
+		request.setReaderSortKey("id");
+		request.setSource("MDM");
+		
+		//WHEN
+		log.info("Perform POST for URL: {}", getEndPoint());
+		var result = mockMvc.perform(post(getEndPoint() + "/bulk/insert").
+	    		contentType(MediaType.APPLICATION_JSON).
+	    		content(mapper.writeValueAsString(request)).
+	    		accept(MediaType.APPLICATION_JSON_VALUE)).
+				andReturn();
+		
+		//THEN
+		var response = result.getResponse();
+		assertEquals(HttpStatus.OK.value(), response.getStatus());
+		assertEquals(MediaType.APPLICATION_JSON_VALUE, response.getContentType());
+		log.info("Response received: {}", response.getContentAsString());
+		
+		var batchStatus = mapper.readValue(response.getContentAsString(), BatchStatus.class);
+		log.info("Job Status: {}", batchStatus);
+		assertEquals(BatchStatus.COMPLETED, batchStatus);
 	}
 
 	@Override
