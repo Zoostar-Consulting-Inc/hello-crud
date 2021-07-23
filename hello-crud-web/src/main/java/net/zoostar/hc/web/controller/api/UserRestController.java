@@ -79,14 +79,14 @@ public class UserRestController extends AbstractCrudController<User> implements 
 
     @PostMapping("/bulk/insert")
     public ResponseEntity<BatchStatus> bulkInsert(@RequestBody RequestBulkInsert<User> request) throws Exception {
-    	log.info("Bulk insert using request: {}", request.toString());
+    	log.info("Bulk insert using request: {}", request);
     	SimpleJobLauncher launcher = new SimpleJobLauncher();
 		launcher.setJobRepository(jobRepository);
 		launcher.afterPropertiesSet();
 		log.info("Job launcher initialized: {}.", launcher);
 
 		Job userJob = applicationContext.getBean("bulk-insert-users", Job.class);
-    	log.info("Launching job: {}...", userJob.toString());
+    	log.info("Launching job: {}...", userJob);
 		JobParameters jobParameters = new JobParametersBuilder().
 				addString("source", request.getSource()).
 				addLong("readerPageSize", request.getReaderPageSize()).
