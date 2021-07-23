@@ -17,14 +17,6 @@
 	<import resource="classpath:META-INF/datasource-from.xml"/>
 	<import resource="classpath:META-INF/datasource-job.xml" />
 	<import resource="classpath:META-INF/datasource.xml" />
-	
-	<batch:job id="job-snapshot">
-		<batch:step id="db-to-db-loader">
-			<batch:tasklet>
-				<batch:chunk reader="dbReader" processor="processor" writer="dbWriter" commit-interval="1" />
-			</batch:tasklet>
-		</batch:step>
-	</batch:job>
 
 	<bean id="dbReader" class="org.springframework.batch.item.database.JdbcPagingItemReader" scope="step">
 		<property name="dataSource" ref="fromDataSource" />
@@ -49,6 +41,6 @@
 		<property name="source" value="#{jobParameters['source']}" />
 	</bean>
 	
-	<bean id="processor" class="net.zoostar.hc.batch.tasklet.GenericRecordProcessor" />
+	<bean id="recordProcessor" class="net.zoostar.hc.batch.tasklet.GenericRecordProcessor" />
 	
 </beans>

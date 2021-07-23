@@ -27,7 +27,8 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(locations = {
 		"classpath:META-INF/applicationContext-web.xml",
-		"classpath:META-INF/spring-security.xml"})
+		"classpath:META-INF/spring-security.xml",
+		"classpath:META-INF/job-user-snapshot.xml"})
 class DummyAuthenticationProviderImplTest {
 
 	UsernamePasswordAuthenticationToken authentication;

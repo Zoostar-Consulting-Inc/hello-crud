@@ -3,12 +3,13 @@ package net.zoostar.hc.web.controller.api;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+
+import javax.batch.runtime.BatchStatus;
 
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
@@ -22,8 +23,10 @@ import org.springframework.http.MediaType;
 import lombok.Getter;
 import net.zoostar.hc.dao.UserRepository;
 import net.zoostar.hc.model.EntityWrapper;
+import net.zoostar.hc.model.MdmUser;
 import net.zoostar.hc.model.User;
 import net.zoostar.hc.service.impl.UserServiceImpl;
+import net.zoostar.hc.web.request.RequestBulkInsert;
 import net.zoostar.hc.web.request.RequestUser;
 
 class UserRestControllerTest extends AbstractCrudControllerTest<User> {
@@ -90,17 +93,33 @@ class UserRestControllerTest extends AbstractCrudControllerTest<User> {
 	}
 
 	@Test
-	void testSnapshot() throws Exception {
+	void testBulkInsert() throws Exception {
 		//GIVEN
-
+		var request = new RequestBulkInsert<User>();
+		request.setMappedClass(MdmUser.class.getName());
+		request.setReaderSelectClause("id AS ID, email AS EMAIL, fname AS FIRST_NAME, lname AS LAST_NAME");
+		request.setReaderFromClause("user");
+		request.setReaderPageSize(3L);
+		request.setReaderSortKey("id");
+		request.setSource("MDM");
+		
 		//WHEN
-		log.info("Perform GET for URL: {}", getEndPoint());
-		var result = mockMvc.perform(get(getEndPoint() + "/snapshot")).
+		log.info("Perform POST for URL: {}", getEndPoint());
+		var result = mockMvc.perform(post(getEndPoint() + "/bulk/insert").
+	    		contentType(MediaType.APPLICATION_JSON).
+	    		content(mapper.writeValueAsString(request)).
+	    		accept(MediaType.APPLICATION_JSON_VALUE)).
 				andReturn();
 		
 		//THEN
 		var response = result.getResponse();
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
+		assertEquals(MediaType.APPLICATION_JSON_VALUE, response.getContentType());
+		log.info("Response received: {}", response.getContentAsString());
+		
+		var batchStatus = mapper.readValue(response.getContentAsString(), BatchStatus.class);
+		log.info("Job Status: {}", batchStatus);
+		assertEquals(BatchStatus.COMPLETED, batchStatus);
 	}
 
 	@Override

@@ -35,7 +35,8 @@ import net.zoostar.hc.web.filter.GatewayAuditFilterChain;
 @WebAppConfiguration
 @ActiveProfiles({"test", "hsql-test"})
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(locations = {"classpath:META-INF/applicationContext-web.xml"})
+@ContextConfiguration(locations = {"classpath:META-INF/applicationContext-web.xml",
+		"classpath:META-INF/job-user-snapshot.xml"})
 class IndexControllerTest {
 
 	@Autowired
