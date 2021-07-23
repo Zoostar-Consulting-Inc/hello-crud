@@ -95,7 +95,7 @@ class UserRestControllerTest extends AbstractCrudControllerTest<User> {
 	@Test
 	void testBulkInsert() throws Exception {
 		//GIVEN
-		var request = new RequestBulkInsert<User>();
+		var request = new RequestBulkInsert();
 		request.setMappedClass(MdmUser.class.getName());
 		request.setReaderSelectClause("id AS ID, email AS EMAIL, fname AS FIRST_NAME, lname AS LAST_NAME");
 		request.setReaderFromClause("user");

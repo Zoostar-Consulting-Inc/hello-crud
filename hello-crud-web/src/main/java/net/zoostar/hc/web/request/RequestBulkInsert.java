@@ -3,12 +3,11 @@ package net.zoostar.hc.web.request;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import net.zoostar.hc.model.AbstractStringPersistable;
 
 @Getter
 @Setter
 @ToString
-public class RequestBulkInsert<T extends AbstractStringPersistable> {
+public class RequestBulkInsert {
 	
 	private String source;
 	

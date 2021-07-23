@@ -78,7 +78,7 @@ public class UserRestController extends AbstractCrudController<User> implements 
 	}
 
     @PostMapping("/bulk/insert")
-    public ResponseEntity<BatchStatus> bulkInsert(@RequestBody RequestBulkInsert<User> request) throws Exception {
+    public ResponseEntity<BatchStatus> bulkInsert(@RequestBody RequestBulkInsert request) throws Exception {
     	log.info("Bulk insert using request: {}", request);
     	SimpleJobLauncher launcher = new SimpleJobLauncher();
 		launcher.setJobRepository(jobRepository);
